@@ -8,6 +8,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 
+const authRoutes = require("./routes/auth");
+
 const app = express();
 
 const clientAddress = process.env.ENVIRONMENT === "production" ? process.env.CLIENT_ADDRESS : "http://localhost:3000";
@@ -38,4 +40,5 @@ mongoose
   });
 
 //routes
-app.get("/", (req, res) => res.status(200).send("Home Page"));
+// app.get("/", (req, res) => res.status(200).send("Home Page"));
+app.use(authRoutes);
