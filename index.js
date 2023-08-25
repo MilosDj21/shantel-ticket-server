@@ -9,6 +9,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 
 const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(
 );
 app.use(helmet());
 app.use(morgan("combined", { stream: accessLogStream }));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 //db connection and starting express server
 mongoose.set("strictQuery", false);
@@ -42,3 +44,4 @@ mongoose
 //routes
 // app.get("/", (req, res) => res.status(200).send("Home Page"));
 app.use(authRoutes);
+app.use("/users", userRoutes);
