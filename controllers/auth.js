@@ -11,22 +11,6 @@ const createJwt = (id) => {
   });
 };
 
-module.exports.signup = async (req, res) => {
-  const { email, firstName, lastName, password } = req.body;
-  try {
-    const user = await User.signup(email, firstName, lastName, password);
-    const jwtToken = createJwt(user._id);
-    res.cookie("jwt", jwtToken, {
-      httpOnly: true,
-      maxAge: maxAge * 1000,
-      secure: process.env.ENVIRONMENT === "production" ? true : false,
-    });
-    res.status(200).json({ status: "success", data: user });
-  } catch (err) {
-    res.status(400).json({ status: "failed", message: err.message });
-  }
-};
-
 module.exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
