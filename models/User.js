@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    roles: {
+      type: [String],
+    },
     profileImage: {
       type: String,
       required: false,
@@ -30,11 +33,9 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-//TODO: handle file upload for profile image
-
 //static method, must not be arrow function
-userSchema.statics.signup = async function (email, password, firstName, lastName) {
-  if (!email || !password || !firstName || !lastName) throw Error("All fields must be filled!");
+userSchema.statics.signup = async function (email, password, firstName, lastName, roles, profileImage) {
+  if (!email || !password || !firstName || !lastName || !roles || !profileImage) throw Error("All fields must be filled!");
   if (!isEmail(email)) throw Error("Not a valid email!");
   if (!isStrongPassword(password)) throw Error("Password not strong enough!");
 
@@ -44,7 +45,7 @@ userSchema.statics.signup = async function (email, password, firstName, lastName
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
 
-  const user = await this.create({ email, password: hashPassword, firstName, lastName });
+  const user = await this.create({ email, password: hashPassword, firstName, lastName, roles, profileImage: profileImage.path });
   return user;
 };
 
@@ -62,6 +63,7 @@ userSchema.statics.login = async function (email, password) {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        roles: user.roles,
         profileImage: user.profileImage,
       };
   }
