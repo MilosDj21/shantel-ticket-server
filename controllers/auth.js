@@ -21,7 +21,7 @@ module.exports.login = async (req, res) => {
       maxAge: maxAge * 1000,
       secure: process.env.ENVIRONMENT === "production" ? true : false,
     });
-    res.status(200).json({ status: "success", data: user._id });
+    res.status(200).json({ status: "success", data: user });
   } catch (err) {
     res.status(400).json({ status: "failed", message: err.message });
   }
