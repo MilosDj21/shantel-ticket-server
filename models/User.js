@@ -49,6 +49,16 @@ userSchema.statics.signup = async function (email, password, firstName, lastName
   return user;
 };
 
+userSchema.statics.modifyOne = async function (id, userData) {
+  if (userData.password) {
+    const salt = await bcrypt.genSalt();
+    userData.password = await bcrypt.hash(userData.password, salt);
+  }
+  const user = await User.findOneAndUpdate({ _id: id }, { ...userData });
+  if (!user) throw Error("No such user");
+  return user;
+};
+
 //static method, must not be arrow function
 userSchema.statics.login = async function (email, password) {
   if (!email || !password) throw Error("All fields must be filled!");
