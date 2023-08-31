@@ -9,7 +9,7 @@ const verifyToken = (req, res, next) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
       if (err) {
         // console.log(err.message);
-        res.status(401).json({ error: "Unauthorized" });
+        res.status(401).json({ message: "Unauthorized" });
       } else {
         // console.log(decodedToken);
         req.userId = decodedToken.id;
@@ -17,20 +17,20 @@ const verifyToken = (req, res, next) => {
       }
     });
   } else {
-    res.status(401).json({ error: "Missing token" });
+    res.status(401).json({ message: "Missing token" });
   }
 };
 
 const isAdmin = async (req, res, next) => {
   const user = await User.findById(req.userId);
   if (!user) {
-    res.status(403).json({ error: "Unauthorized" });
+    res.status(403).json({ message: "Unauthorized" });
   }
   const adminRoles = await Role.find().or([{ name: "Admin" }, { name: "Super Admin" }]);
   if (user.roles.includes(adminRoles[0]._id.toString()) || user.roles.includes(adminRoles[1]._id.toString())) {
     next();
   } else {
-    res.status(403).json({ error: "Require Admin role" });
+    res.status(403).json({ message: "Require Admin role" });
   }
 };
 
