@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { saveOne, findAll } = require("../controllers/user");
+const { saveOne, updateOne, findAll, findOne } = require("../controllers/user");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const multerConf = require("../middlewares/multerConf");
 
@@ -9,7 +9,9 @@ router.use(verifyToken);
 router.use(isAdmin);
 router.use(multerConf);
 
-router.post("/", saveOne);
+router.get("/:userId", findOne);
 router.get("/", findAll);
+router.post("/", saveOne);
+router.patch("/", updateOne);
 
 module.exports = router;
