@@ -11,6 +11,7 @@ const morgan = require("morgan");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const roleRoutes = require("./routes/role");
+const techTicketRoutes = require("./routes/techTicket");
 
 const app = express();
 
@@ -47,3 +48,4 @@ mongoose
 app.use(authRoutes);
 app.use("/users", userRoutes);
 app.use("/roles", roleRoutes);
+app.use("/techTickets", techTicketRoutes);
