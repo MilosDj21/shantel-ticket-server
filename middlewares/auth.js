@@ -22,15 +22,18 @@ const verifyToken = (req, res, next) => {
 };
 
 const isAdmin = async (req, res, next) => {
-  const user = await User.findById(req.userId);
-  if (!user) {
-    res.status(403).json({ message: "Unauthorized" });
-  }
-  const adminRoles = await Role.find().or([{ name: "Admin" }, { name: "Super Admin" }]);
-  if (user.roles.includes(adminRoles[0]._id.toString()) || user.roles.includes(adminRoles[1]._id.toString())) {
-    next();
-  } else {
-    res.status(403).json({ message: "Require Admin role" });
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) throw Error("Unauthorized");
+
+    const adminRoles = await Role.find().or([{ name: "Admin" }, { name: "Super Admin" }]);
+    if (user.roles.includes(adminRoles[0]._id.toString()) || user.roles.includes(adminRoles[1]._id.toString())) {
+      next();
+    } else {
+      throw Error("Require Admin role");
+    }
+  } catch (error) {
+    res.status(403).json({ message: error.message });
   }
 };
 
