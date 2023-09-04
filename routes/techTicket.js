@@ -1,6 +1,7 @@
 const { Router } = require("express");
-const { findOne, findAll, saveOne, updateOne, deleteOne, findOneByUser, findAllByUser, saveOneByUser, updateOneByUser, deleteOneByUser } = require("../controllers/techTicket");
+const { findOne, findAll, saveOne, updateOne, deleteOne, findOneByUser, findAllByUser, saveOneByUser } = require("../controllers/techTicket");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
+const ticketMessageRouter = require("./techTicketMessage");
 
 // routes for all tickets, only admin can access them directly
 const router = Router();
@@ -20,6 +21,9 @@ const userTicketRouter = Router({ mergeParams: true });
 userTicketRouter.get("/:ticketId", findOneByUser);
 userTicketRouter.get("/", findAllByUser);
 userTicketRouter.post("/", saveOneByUser);
+
+//routes for ticket messages
+userTicketRouter.use("/:ticketId/ticketMessage", ticketMessageRouter);
 
 const ticketRouter = (module.exports = router);
 ticketRouter.userTicketRouter = userTicketRouter;
