@@ -52,7 +52,7 @@ module.exports.updateOne = async (req, res) => {
 };
 
 module.exports.deleteOne = async (req, res) => {
-  const { ticketId } = req.body;
+  const { ticketId } = req.params;
   try {
     if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
     const ticket = await Ticket.findByIdAndDelete(ticketId);
