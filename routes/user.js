@@ -8,8 +8,9 @@ const router = Router();
 
 router.use(verifyToken);
 
-router.get("/:userId", [isAdmin, multerConf], findOne);
-router.get("/", [isAdmin, multerConf], findAll);
+router.get("/:userId", [isAdmin], findOne);
+router.get("/", [isAdmin], findAll);
+router.get("/search/:searchValue", [isAdmin], findAll);
 router.post("/", [isAdmin, multerConf], saveOne);
 router.patch("/", [isAdmin, multerConf], updateOne);
 

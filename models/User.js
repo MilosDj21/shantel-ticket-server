@@ -33,6 +33,8 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// userSchema.index({ email: "text", firstName: "text", lastName: "text" });
+
 //static method, must not be arrow function
 userSchema.statics.signup = async function (email, password, firstName, lastName, roles, profileImage) {
   if (!email || !password || !firstName || !lastName || !roles || !profileImage) throw Error("All fields must be filled!");

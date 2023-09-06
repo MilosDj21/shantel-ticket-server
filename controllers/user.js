@@ -17,9 +17,23 @@ module.exports.findOne = async (req, res) => {
 };
 
 module.exports.findAll = async (req, res) => {
+  const { searchValue } = req.params;
   try {
-    const users = await User.find({}, { password: 0 });
+    let users = await User.find({}, { password: 0 });
     const roles = await Role.find();
+    if (searchValue) {
+      users = users.filter((u) => {
+        if (
+          u.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+          u.firstName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          u.lastName.toLowerCase().includes(searchValue.toLowerCase())
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    }
     const filteredUsers = users.map((u) => {
       const userRoles = [];
       for (ur of u.roles) {
