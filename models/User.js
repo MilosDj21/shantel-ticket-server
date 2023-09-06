@@ -23,7 +23,8 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     roles: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Role",
     },
     profileImage: {
       type: String,

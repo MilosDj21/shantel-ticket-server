@@ -8,7 +8,7 @@ module.exports.findOne = async (req, res) => {
   const userId = req.params.userId;
   try {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
-    const user = await User.findById(userId, { password: 0 });
+    const user = await User.findById(userId, { password: 0 }).populate("roles");
     if (!user) throw Error("No such user");
     res.status(200).json({ status: "success", data: user });
   } catch (error) {
@@ -19,8 +19,7 @@ module.exports.findOne = async (req, res) => {
 module.exports.findAll = async (req, res) => {
   const { searchValue } = req.params;
   try {
-    let users = await User.find({}, { password: 0 });
-    const roles = await Role.find();
+    let users = await User.find({}, { password: 0 }).populate("roles");
     if (searchValue) {
       users = users.filter((u) => {
         if (
@@ -34,25 +33,7 @@ module.exports.findAll = async (req, res) => {
         }
       });
     }
-    const filteredUsers = users.map((u) => {
-      const userRoles = [];
-      for (ur of u.roles) {
-        for (r of roles) {
-          if (r._id.toString() === ur) {
-            userRoles.push(r.name);
-          }
-        }
-      }
-      return {
-        _id: u._id,
-        email: u.email,
-        firstName: u.firstName,
-        lastName: u.lastName,
-        roles: userRoles,
-        profileImage: u.profileImage,
-      };
-    });
-    res.status(200).json({ status: "status", data: filteredUsers });
+    res.status(200).json({ status: "status", data: users });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
   }

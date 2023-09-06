@@ -7,7 +7,7 @@ module.exports.findOne = async (req, res) => {
   try {
     if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
 
-    const ticket = await Ticket.findById(ticketId);
+    const ticket = await Ticket.findById(ticketId).populate("user", "-password");
     if (!ticket) throw Error("Invalid ticket");
 
     res.status(200).json({ status: "success", data: ticket });
@@ -18,7 +18,7 @@ module.exports.findOne = async (req, res) => {
 
 module.exports.findAll = async (req, res) => {
   try {
-    const tickets = await Ticket.find();
+    const tickets = await Ticket.find().populate("user", "-password");
     res.status(200).json({ status: "success", data: tickets });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
@@ -70,8 +70,8 @@ module.exports.findOneByUser = async (req, res) => {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
     if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
 
-    const ticket = await Ticket.find({ _id: ticketId, userId: userId });
-    if (ticket.length === 0) throw Error("Invalid ticket");
+    const ticket = await Ticket.findById(ticketId).populate("user", "-password");
+    if (ticket.length === 0 || ticket.user._id.toString() !== userId) throw Error("Invalid ticket");
 
     res.status(200).json({ status: "success", data: ticket });
   } catch (error) {
@@ -84,7 +84,11 @@ module.exports.findAllByUser = async (req, res) => {
   try {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
 
-    const tickets = await Ticket.find({ userId: userId });
+    let tickets = await Ticket.find().populate("user", "-password");
+    tickets = tickets.filter((t) => {
+      if (t.user._id.toString() === userId) return true;
+      else return false;
+    });
 
     res.status(200).json({ status: "success", data: tickets });
   } catch (error) {
