@@ -1,15 +1,17 @@
+const fs = require("fs");
+const path = require("path");
 const mongoose = require("mongoose");
 const TicketMessage = require("../models/TechTicketMessage");
 
 module.exports.findOne = async (req, res) => {
-  const { userId, ticketId, messageId } = req.params;
+  const { ticketId, messageId } = req.params;
   try {
-    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
     if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
     if (!messageId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket message id");
 
-    const ticketMessage = await TicketMessage.findById(messageId);
+    const ticketMessage = await TicketMessage.findById(messageId).populate("user", "-password").populate("ticket");
     if (!ticketMessage) throw Error("Invalid ticket message");
+    if (ticketMessage.ticket._id.toString() !== ticketId) throw Error("Invalid ticket message");
 
     res.status(200).json({ status: "success", data: ticketMessage });
   } catch (error) {
@@ -20,7 +22,11 @@ module.exports.findOne = async (req, res) => {
 module.exports.findAll = async (req, res) => {
   const { ticketId } = req.params;
   try {
-    const ticketMessages = await TicketMessage.find({ ticketId });
+    let ticketMessages = await TicketMessage.find().populate("user", "-password").populate("ticket");
+    ticketMessages = ticketMessages.filter((t) => {
+      if (t.ticket._id.toString() === ticketId) return true;
+      else return false;
+    });
     res.status(200).json({ status: "success", data: ticketMessages });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
@@ -28,16 +34,16 @@ module.exports.findAll = async (req, res) => {
 };
 
 module.exports.saveOne = async (req, res) => {
-  const { userId, ticketId } = req.params;
-  const { message } = req.body;
-  console.log(req.body);
+  const { ticketId } = req.params;
+  const { message, userId } = req.body;
   const messageImage = req.file;
   try {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
     if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
-    if (!message || !messageImage) throw Error("All fields must be filled");
+    if (!message || !userId) throw Error("All fields must be filled");
+    const image = messageImage ? messageImage.path : "";
 
-    const ticketMessage = await TicketMessage.create({ message, image: messageImage.path, userId, ticketId });
+    const ticketMessage = await TicketMessage.create({ message, image, user: userId, ticket: ticketId });
     if (!ticketMessage) throw Error("Creating ticket message failed");
     res.status(200).json({ status: "success", data: ticketMessage });
   } catch (error) {
@@ -51,14 +57,15 @@ module.exports.saveOne = async (req, res) => {
 };
 
 module.exports.updateOne = async (req, res) => {
-  const { id, message, userId, ticketId } = req.body;
+  const { ticketId } = req.params;
+  const { id, message, userId } = req.body;
   const messageImage = req.file;
   try {
     if (!id || !mongoose.Types.ObjectId.isValid(id)) throw Error("Invalid ticket message id");
     const messageObj = {};
     if (message) messageObj.message = message;
-    if (userId) messageObj.userId = userId;
-    if (ticketId) messageObj.ticketId = ticketId;
+    if (userId) messageObj.user = userId;
+    if (ticketId) messageObj.ticket = ticketId;
     if (messageImage) messageObj.image = messageImage.path;
 
     const ticketMessage = await TicketMessage.findByIdAndUpdate(id, { ...messageObj }, { new: true });

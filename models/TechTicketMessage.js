@@ -9,21 +9,19 @@ const techTicketMessageSchema = new mongoose.Schema(
     image: {
       type: String,
     },
-    userId: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    ticketId: {
+    ticket: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Ticket",
+      ref: "TechTicket",
       required: true,
     },
   },
   { timestamps: true }
 );
-
-// TODO: change controllers to use populate for userId and ticketId
 
 const TechTicketMessage = mongoose.model("TechTicketMessage", techTicketMessageSchema);
 

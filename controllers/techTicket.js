@@ -31,7 +31,7 @@ module.exports.saveOne = async (req, res) => {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
     if (!title || !category) throw Error("All fields must be filled");
 
-    const ticket = await Ticket.create({ title, status: "new", category, userId });
+    const ticket = await Ticket.create({ title, status: "new", category, user: userId });
     if (!ticket) throw Error("Creating ticket failed");
     res.status(200).json({ status: "success", data: ticket });
   } catch (error) {
@@ -40,10 +40,16 @@ module.exports.saveOne = async (req, res) => {
 };
 
 module.exports.updateOne = async (req, res) => {
-  const { ticketId } = req.body;
+  const { id, title, status, category, userId } = req.body;
   try {
-    if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
-    const ticket = await Ticket.findByIdAndUpdate(ticketId, { ...req.body }, { new: true });
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) throw Error("Invalid ticket id");
+    const ticketObj = {};
+    if (title) ticketObj.title = title;
+    if (status) ticketObj.status = status;
+    if (category) ticketObj.category = category;
+    if (userId) ticketObj.user = userId;
+
+    const ticket = await Ticket.findByIdAndUpdate(id, { ...ticketObj }, { new: true });
     if (!ticket) throw Error("Updating ticket failed");
     res.status(200).json({ status: "success", data: ticket });
   } catch (error) {
@@ -103,7 +109,7 @@ module.exports.saveOneByUser = async (req, res) => {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
     if (!title || !category) throw Error("All fields must be filled");
 
-    const ticket = await Ticket.create({ title, status: "new", category, userId });
+    const ticket = await Ticket.create({ title, status: "new", category, user: userId });
     if (!ticket) throw Error("Creating ticket failed");
     res.status(200).json({ status: "success", data: ticket });
   } catch (error) {
