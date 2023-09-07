@@ -22,11 +22,8 @@ module.exports.findOne = async (req, res) => {
 module.exports.findAll = async (req, res) => {
   const { ticketId } = req.params;
   try {
-    let ticketMessages = await TicketMessage.find().populate("user", "-password").populate("ticket");
-    ticketMessages = ticketMessages.filter((t) => {
-      if (t.ticket._id.toString() === ticketId) return true;
-      else return false;
-    });
+    if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
+    let ticketMessages = await TicketMessage.find({ ticket: ticketId }).populate("user", "-password").populate("ticket");
     res.status(200).json({ status: "success", data: ticketMessages });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });

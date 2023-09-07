@@ -90,11 +90,7 @@ module.exports.findAllByUser = async (req, res) => {
   try {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
 
-    let tickets = await Ticket.find().populate("user", "-password");
-    tickets = tickets.filter((t) => {
-      if (t.user._id.toString() === userId) return true;
-      else return false;
-    });
+    let tickets = await Ticket.find({ user: userId }).populate("user", "-password");
 
     res.status(200).json({ status: "success", data: tickets });
   } catch (error) {
