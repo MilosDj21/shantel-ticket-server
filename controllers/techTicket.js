@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const Ticket = require("../models/TechTicket");
+const TicketMessage = require("../models/TechTicketMessage");
+const User = require("../models/User");
 
 // controllers for all tickets
 module.exports.findOne = async (req, res) => {
@@ -17,9 +19,40 @@ module.exports.findOne = async (req, res) => {
 };
 
 module.exports.findAll = async (req, res) => {
+  const { searchValue } = req.params;
   try {
-    const tickets = await Ticket.find().populate("user", "-password");
-    res.status(200).json({ status: "success", data: tickets });
+    let tickets = await Ticket.find().populate("user", "-password");
+    if (searchValue) {
+      const searchTicketArray = [];
+      let ticketMessages = await TicketMessage.find().populate("ticket");
+      const isAlreadyInSearchArray = (ticket) => {
+        for (const s of searchTicketArray) {
+          if (s._id.equals(ticket._id)) {
+            return true;
+          }
+        }
+        return false;
+      };
+      for (const t of tickets) {
+        if (t.title.toLowerCase().includes(searchValue.toLowerCase())) {
+          if (!isAlreadyInSearchArray(t)) {
+            searchTicketArray.push(t);
+          }
+        }
+      }
+      for (const t of ticketMessages) {
+        if (t.message.toLowerCase().includes(searchValue.toLowerCase())) {
+          if (!isAlreadyInSearchArray(t.ticket)) {
+            const user = await User.findById(t.ticket.user, { password: 0 });
+            t.ticket.user = user;
+            searchTicketArray.push(t.ticket);
+          }
+        }
+      }
+      res.status(200).json({ status: "success", data: searchTicketArray });
+    } else {
+      res.status(200).json({ status: "success", data: tickets });
+    }
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
   }
@@ -86,13 +119,43 @@ module.exports.findOneByUser = async (req, res) => {
 };
 
 module.exports.findAllByUser = async (req, res) => {
-  const { userId } = req.params;
+  const { userId, searchValue } = req.params;
   try {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
-
     let tickets = await Ticket.find({ user: userId }).populate("user", "-password");
-
-    res.status(200).json({ status: "success", data: tickets });
+    if (searchValue) {
+      const searchTicketArray = [];
+      let ticketMessages = await TicketMessage.find().populate("ticket");
+      const isAlreadyInSearchArray = (ticket) => {
+        for (const s of searchTicketArray) {
+          if (s._id.equals(ticket._id)) {
+            return true;
+          }
+        }
+        return false;
+      };
+      for (const t of tickets) {
+        if (t.title.toLowerCase().includes(searchValue.toLowerCase())) {
+          if (!isAlreadyInSearchArray(t)) {
+            searchTicketArray.push(t);
+          }
+        }
+      }
+      for (const t of ticketMessages) {
+        if (t.message.toLowerCase().includes(searchValue.toLowerCase())) {
+          if (t.ticket.user.equals(userId)) {
+            if (!isAlreadyInSearchArray(t.ticket)) {
+              const user = await User.findById(userId, { password: 0 });
+              t.ticket.user = user;
+              searchTicketArray.push(t.ticket);
+            }
+          }
+        }
+      }
+      res.status(200).json({ status: "success", data: searchTicketArray });
+    } else {
+      res.status(200).json({ status: "success", data: tickets });
+    }
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
   }
@@ -105,7 +168,7 @@ module.exports.saveOneByUser = async (req, res) => {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
     if (!title || !category) throw Error("All fields must be filled");
 
-    const ticket = await Ticket.create({ title, status: "new", category, user: userId });
+    const ticket = await Ticket.create({ title, status: "New", category, user: userId });
     if (!ticket) throw Error("Creating ticket failed");
     res.status(200).json({ status: "success", data: ticket });
   } catch (error) {

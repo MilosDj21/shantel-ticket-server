@@ -10,6 +10,7 @@ router.use(verifyToken);
 // routes for all tickets, only admin can access them directly
 router.get("/:ticketId", [isAdmin], findOne);
 router.get("/", [isAdmin], findAll);
+router.get("/search/:searchValue", [isAdmin], findAll);
 router.post("/", [isAdmin], saveOne);
 router.patch("/", [isAdmin], updateOne);
 router.delete("/:ticketId", [isAdmin], deleteOne);
@@ -22,6 +23,7 @@ const userTicketRouter = Router({ mergeParams: true });
 
 userTicketRouter.get("/:ticketId", findOneByUser);
 userTicketRouter.get("/", findAllByUser);
+userTicketRouter.get("/search/:searchValue", findAllByUser);
 userTicketRouter.post("/", saveOneByUser);
 
 const ticketRouter = (module.exports = router);
