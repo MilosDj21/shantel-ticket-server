@@ -21,10 +21,23 @@ module.exports.findOne = async (req, res) => {
 module.exports.findAll = async (req, res) => {
   const { searchValue } = req.params;
   try {
-    let tickets = await Ticket.find().populate("user", "-password");
+    const combined = await Ticket.aggregate([
+      {
+        $lookup: {
+          from: "techticketmessages",
+          localField: "_id",
+          foreignField: "ticket",
+          as: "messages",
+        },
+      },
+    ]);
+    const tickets = await Ticket.populate(combined, { path: "user", select: "_id email firstName lastName roles profileImage createdAt updatedAt" });
+
+    // TODO: find how to populate messages.user to show profile image for ticket last response
+    // tickets = await Ticket.populate(tickets, { path: "messages.user", select: "_id email firstName lastName roles profileImage createdAt updatedAt" });
+
     if (searchValue) {
       const searchTicketArray = [];
-      let ticketMessages = await TicketMessage.find().populate("ticket");
       const isAlreadyInSearchArray = (ticket) => {
         for (const s of searchTicketArray) {
           if (s._id.equals(ticket._id)) {
@@ -38,14 +51,14 @@ module.exports.findAll = async (req, res) => {
           if (!isAlreadyInSearchArray(t)) {
             searchTicketArray.push(t);
           }
-        }
-      }
-      for (const t of ticketMessages) {
-        if (t.message.toLowerCase().includes(searchValue.toLowerCase())) {
-          if (!isAlreadyInSearchArray(t.ticket)) {
-            const user = await User.findById(t.ticket.user, { password: 0 });
-            t.ticket.user = user;
-            searchTicketArray.push(t.ticket);
+        } else {
+          for (const m of t.messages) {
+            if (m.message.toLowerCase().includes(searchValue.toLowerCase())) {
+              if (!isAlreadyInSearchArray(t)) {
+                searchTicketArray.push(t);
+                break;
+              }
+            }
           }
         }
       }
@@ -122,10 +135,21 @@ module.exports.findAllByUser = async (req, res) => {
   const { userId, searchValue } = req.params;
   try {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
-    let tickets = await Ticket.find({ user: userId }).populate("user", "-password");
+
+    const combined = await Ticket.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(userId) } },
+      {
+        $lookup: {
+          from: "techticketmessages",
+          localField: "_id",
+          foreignField: "ticket",
+          as: "messages",
+        },
+      },
+    ]);
+    const tickets = await Ticket.populate(combined, { path: "user", select: "_id email firstName lastName roles profileImage createdAt updatedAt" });
     if (searchValue) {
       const searchTicketArray = [];
-      let ticketMessages = await TicketMessage.find().populate("ticket");
       const isAlreadyInSearchArray = (ticket) => {
         for (const s of searchTicketArray) {
           if (s._id.equals(ticket._id)) {
@@ -139,15 +163,13 @@ module.exports.findAllByUser = async (req, res) => {
           if (!isAlreadyInSearchArray(t)) {
             searchTicketArray.push(t);
           }
-        }
-      }
-      for (const t of ticketMessages) {
-        if (t.message.toLowerCase().includes(searchValue.toLowerCase())) {
-          if (t.ticket.user.equals(userId)) {
-            if (!isAlreadyInSearchArray(t.ticket)) {
-              const user = await User.findById(userId, { password: 0 });
-              t.ticket.user = user;
-              searchTicketArray.push(t.ticket);
+        } else {
+          for (const m of t.messages) {
+            if (m.message.toLowerCase().includes(searchValue.toLowerCase())) {
+              if (!isAlreadyInSearchArray(t)) {
+                searchTicketArray.push(t);
+                break;
+              }
             }
           }
         }
