@@ -9,10 +9,51 @@ module.exports.findOne = async (req, res) => {
   try {
     if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
 
-    const ticket = await Ticket.findById(ticketId).populate("user", "-password");
-    if (!ticket) throw Error("Invalid ticket");
+    const tickets = await Ticket.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(ticketId) } },
+      { $limit: 1 },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $lookup: {
+          from: "techticketmessages",
+          localField: "_id",
+          foreignField: "ticket",
+          as: "messages",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $unwind: "$user",
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          "user.password": 0,
+          "messages.user.password": 0,
+        },
+      },
+    ]);
+    if (!tickets) throw Error("Invalid ticket");
 
-    res.status(200).json({ status: "success", data: ticket });
+    res.status(200).json({ status: "success", data: tickets[0] });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
   }
@@ -21,20 +62,46 @@ module.exports.findOne = async (req, res) => {
 module.exports.findAll = async (req, res) => {
   const { searchValue } = req.params;
   try {
-    const combined = await Ticket.aggregate([
+    const tickets = await Ticket.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
       {
         $lookup: {
           from: "techticketmessages",
           localField: "_id",
           foreignField: "ticket",
           as: "messages",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $unwind: "$user",
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          "user.password": 0,
+          "messages.user.password": 0,
         },
       },
     ]);
-    const tickets = await Ticket.populate(combined, { path: "user", select: "_id email firstName lastName roles profileImage createdAt updatedAt" });
-
-    // TODO: find how to populate messages.user to show profile image for ticket last response
-    // tickets = await Ticket.populate(tickets, { path: "messages.user", select: "_id email firstName lastName roles profileImage createdAt updatedAt" });
 
     if (searchValue) {
       const searchTicketArray = [];
