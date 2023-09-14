@@ -45,9 +45,31 @@ module.exports.findOne = async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: "techticketlogs",
+          localField: "_id",
+          foreignField: "ticket",
+          as: "logs",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $unwind: "$user",
+            },
+          ],
+        },
+      },
+      {
         $project: {
           "user.password": 0,
           "messages.user.password": 0,
+          "logs.user.password": 0,
         },
       },
     ]);
@@ -96,9 +118,31 @@ module.exports.findAll = async (req, res) => {
         },
       },
       {
+        $lookup: {
+          from: "techticketlogs",
+          localField: "_id",
+          foreignField: "ticket",
+          as: "logs",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $unwind: "$user",
+            },
+          ],
+        },
+      },
+      {
         $project: {
           "user.password": 0,
           "messages.user.password": 0,
+          "logs.user.password": 0,
         },
       },
     ]);
