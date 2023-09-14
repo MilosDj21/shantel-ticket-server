@@ -2,6 +2,7 @@ const { Router } = require("express");
 const { findOne, findAll, saveOne, updateOne, deleteOne, findOneByUser, findAllByUser, saveOneByUser } = require("../controllers/techTicket");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const ticketMessageRouter = require("./techTicketMessage");
+const ticketLogRouter = require("./techTicketLog");
 
 const router = Router();
 
@@ -17,6 +18,9 @@ router.delete("/:ticketId", [isAdmin], deleteOne);
 
 //routes for ticket messages, they are accessed from ticket, so user don't need to be checked
 router.use("/:ticketId/ticketMessage", ticketMessageRouter);
+
+//routes for ticket logs, they are accessed from ticket, so user don't need to be checked
+router.use("/:ticketId/ticketLog", ticketLogRouter);
 
 // routes for user tickets
 const userTicketRouter = Router({ mergeParams: true });
