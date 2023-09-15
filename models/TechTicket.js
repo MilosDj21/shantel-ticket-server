@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const TicketMessage = require("./TechTicketMessage");
+const TicketLog = require("./TechTicketLog");
 
 const techTicketSchema = new mongoose.Schema(
   {
@@ -22,6 +24,13 @@ const techTicketSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+techTicketSchema.pre("findOneAndDelete", async function (next) {
+  const ticketId = this.getFilter()._id;
+  await TicketMessage.deleteMany({ ticket: new mongoose.Types.ObjectId(ticketId) });
+  await TicketLog.deleteMany({ ticket: new mongoose.Types.ObjectId(ticketId) });
+  next();
+});
 
 const TechTicket = mongoose.model("TechTicket", techTicketSchema);
 
