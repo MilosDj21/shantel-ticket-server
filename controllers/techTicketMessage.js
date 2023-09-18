@@ -40,8 +40,9 @@ module.exports.saveOne = async (req, res) => {
     if (!message || !userId) throw Error("All fields must be filled");
     const image = messageImage ? messageImage.path : "";
 
-    const ticketMessage = await TicketMessage.create({ message, image, user: userId, ticket: ticketId });
+    let ticketMessage = await TicketMessage.create({ message, image, user: userId, ticket: ticketId });
     if (!ticketMessage) throw Error("Creating ticket message failed");
+    ticketMessage = await ticketMessage.populate("user", "-password");
     res.status(200).json({ status: "success", data: ticketMessage });
   } catch (error) {
     if (messageImage) {
