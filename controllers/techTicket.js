@@ -82,6 +82,7 @@ module.exports.findOne = async (req, res) => {
 };
 
 module.exports.findAll = async (req, res) => {
+  // TODO: update search to include user name
   const { searchValue } = req.params;
   try {
     const tickets = await Ticket.aggregate([
@@ -226,7 +227,7 @@ module.exports.deleteOne = async (req, res) => {
   }
 };
 
-// controllers for specific users tickets
+// CONTROLLERS FOR SPECIFIC USER TICKETS
 module.exports.findOneByUser = async (req, res) => {
   const { userId, ticketId } = req.params;
   try {
@@ -247,18 +248,48 @@ module.exports.findAllByUser = async (req, res) => {
   try {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
 
-    const combined = await Ticket.aggregate([
+    const tickets = await Ticket.aggregate([
       { $match: { user: new mongoose.Types.ObjectId(userId) } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
       {
         $lookup: {
           from: "techticketmessages",
           localField: "_id",
           foreignField: "ticket",
           as: "messages",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $unwind: "$user",
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          "user.password": 0,
+          "messages.user.password": 0,
         },
       },
     ]);
-    const tickets = await Ticket.populate(combined, { path: "user", select: "_id email firstName lastName roles profileImage createdAt updatedAt" });
+
     if (searchValue) {
       const searchTicketArray = [];
       const isAlreadyInSearchArray = (ticket) => {
