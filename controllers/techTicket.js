@@ -234,10 +234,50 @@ module.exports.findOneByUser = async (req, res) => {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
     if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
 
-    const ticket = await Ticket.findById(ticketId).populate("user", "-password");
-    if (ticket.length === 0 || ticket.user._id.toString() !== userId) throw Error("Invalid ticket");
-
-    res.status(200).json({ status: "success", data: ticket });
+    const tickets = await Ticket.aggregate([
+      { $match: { $and: [{ _id: new mongoose.Types.ObjectId(ticketId) }, { user: new mongoose.Types.ObjectId(userId) }] } },
+      { $limit: 1 },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $lookup: {
+          from: "techticketmessages",
+          localField: "_id",
+          foreignField: "ticket",
+          as: "messages",
+          pipeline: [
+            {
+              $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user",
+              },
+            },
+            {
+              $unwind: "$user",
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          "user.password": 0,
+          "messages.user.password": 0,
+        },
+      },
+    ]);
+    if (!tickets) throw Error("Invalid ticket");
+    res.status(200).json({ status: "success", data: tickets[0] });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
   }
@@ -334,6 +374,21 @@ module.exports.saveOneByUser = async (req, res) => {
 
     const ticket = await Ticket.create({ title, status: "New", category, user: userId });
     if (!ticket) throw Error("Creating ticket failed");
+    res.status(200).json({ status: "success", data: ticket });
+  } catch (error) {
+    res.status(500).json({ status: "failed", message: error.message });
+  }
+};
+
+module.exports.updateOneByUser = async (req, res) => {
+  // USER CAN ONLY UPDATE STATUS(WHEN USER REPLY, STATUS CHANGES TO NEW)
+  const { id, status } = req.body;
+  try {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) throw Error("Invalid ticket id");
+    if (!status) throw Error("All fields must be filled");
+
+    const ticket = await Ticket.findByIdAndUpdate(id, { status }, { new: true });
+    if (!ticket) throw Error("Updating ticket failed");
     res.status(200).json({ status: "success", data: ticket });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });

@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { findOne, findAll, saveOne, updateOne, deleteOne, findOneByUser, findAllByUser, saveOneByUser } = require("../controllers/techTicket");
+const { findOne, findAll, saveOne, updateOne, deleteOne, findOneByUser, findAllByUser, saveOneByUser, updateOneByUser } = require("../controllers/techTicket");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const ticketMessageRouter = require("./techTicketMessage");
 const ticketLogRouter = require("./techTicketLog");
@@ -29,6 +29,7 @@ userTicketRouter.get("/:ticketId", findOneByUser);
 userTicketRouter.get("/", findAllByUser);
 userTicketRouter.get("/search/:searchValue", findAllByUser);
 userTicketRouter.post("/", saveOneByUser);
+userTicketRouter.patch("/", updateOneByUser);
 
 const ticketRouter = (module.exports = router);
 ticketRouter.userTicketRouter = userTicketRouter;
