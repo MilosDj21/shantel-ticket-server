@@ -2,7 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 const User = require("../models/User");
-const Role = require("../models/Role");
+const { authenticator } = require("otplib");
+const qrcode = require("qrcode");
 
 module.exports.findOne = async (req, res) => {
   const userId = req.params.userId;
@@ -43,8 +44,18 @@ module.exports.saveOne = async (req, res) => {
   const { email, firstName, lastName, password, roles } = req.body;
   const profileImage = req.file;
   try {
-    const user = await User.signup(email, password, firstName, lastName, roles, profileImage);
-    res.status(200).json({ status: "success", data: user, message: "Added Successfully!" });
+    const secret = authenticator.generateSecret();
+    const otpauth = authenticator.keyuri(email, "Shantel Ticket", secret);
+    let imageQr = "";
+    qrcode.toDataURL(otpauth, (error, imageUrl) => {
+      if (error) {
+        console.log(error);
+        return;
+      }
+      imageQr = imageUrl;
+    });
+    const user = await User.signup(email, password, firstName, lastName, roles, profileImage, secret);
+    res.status(200).json({ status: "success", data: imageQr, message: "Added Successfully!" });
   } catch (err) {
     if (profileImage) {
       fs.unlink(path.join(__dirname, `../${profileImage.path}`), (error) => {

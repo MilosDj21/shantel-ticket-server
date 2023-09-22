@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const { authenticator } = require("otplib");
 require("dotenv").config();
 
 //3 days in seconds
@@ -12,9 +13,14 @@ const createJwt = (id) => {
 };
 
 module.exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, twoFaToken } = req.body;
   try {
+    if (!email || !password || !twoFaToken) throw Error("All fields must be filled");
     const user = await User.login(email, password);
+
+    const twoFAValid = authenticator.verify({ token: twoFaToken, secret: user.secret });
+    if (!twoFAValid) throw Error("Unauthorized");
+
     const jwtToken = createJwt(user._id);
     res.cookie("jwt", jwtToken, {
       httpOnly: true,
