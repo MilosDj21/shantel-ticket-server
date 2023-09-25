@@ -189,7 +189,7 @@ module.exports.saveOne = async (req, res) => {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
     if (!title || !category) throw Error("All fields must be filled");
 
-    const ticket = await Ticket.create({ title, status: "new", category, user: userId });
+    const ticket = await Ticket.create({ title, status: "new", category, seenByAdmin: false, user: userId });
     if (!ticket) throw Error("Creating ticket failed");
     res.status(200).json({ status: "success", data: ticket });
   } catch (error) {
@@ -198,13 +198,14 @@ module.exports.saveOne = async (req, res) => {
 };
 
 module.exports.updateOne = async (req, res) => {
-  const { id, title, status, category, userId } = req.body;
+  const { id, title, status, category, seenByAdmin, userId } = req.body;
   try {
     if (!id || !mongoose.Types.ObjectId.isValid(id)) throw Error("Invalid ticket id");
     const ticketObj = {};
     if (title) ticketObj.title = title;
     if (status) ticketObj.status = status;
     if (category) ticketObj.category = category;
+    if (seenByAdmin) ticketObj.seenByAdmin = seenByAdmin;
     if (userId) ticketObj.user = userId;
 
     const ticket = await Ticket.findByIdAndUpdate(id, { ...ticketObj }, { new: true });
@@ -372,7 +373,7 @@ module.exports.saveOneByUser = async (req, res) => {
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
     if (!title || !category) throw Error("All fields must be filled");
 
-    const ticket = await Ticket.create({ title, status: "New", category, user: userId });
+    const ticket = await Ticket.create({ title, status: "New", category, seenByAdmin: false, user: userId });
     if (!ticket) throw Error("Creating ticket failed");
     res.status(200).json({ status: "success", data: ticket });
   } catch (error) {

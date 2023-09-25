@@ -16,6 +16,10 @@ const techTicketSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    seenByAdmin: {
+      type: Boolean,
+      required: true,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
