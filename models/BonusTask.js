@@ -14,10 +14,21 @@ const bonusTasksSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    user: {
+    price: {
+      type: Number,
+      required: true,
+    },
+    timeOfCompletion: {
+      type: Date,
+    },
+    createdByUser: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    takenByUser: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   { timestamps: true }
