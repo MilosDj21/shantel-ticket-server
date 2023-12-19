@@ -30,9 +30,13 @@ const techTicketSchema = new mongoose.Schema(
 );
 
 techTicketSchema.pre("findOneAndDelete", async function (next) {
-  const ticketId = this.getFilter()._id;
-  await TicketMessage.deleteMany({ ticket: new mongoose.Types.ObjectId(ticketId) });
-  await TicketLog.deleteMany({ ticket: new mongoose.Types.ObjectId(ticketId) });
+  try {
+    const ticketId = this.getFilter()._id;
+    await TicketMessage.deleteMany({ ticket: new mongoose.Types.ObjectId(ticketId) });
+    await TicketLog.deleteMany({ ticket: new mongoose.Types.ObjectId(ticketId) });
+  } catch (error) {
+    console.log(error);
+  }
   next();
 });
 
