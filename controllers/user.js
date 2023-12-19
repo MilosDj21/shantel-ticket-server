@@ -89,3 +89,15 @@ module.exports.updateOne = async (req, res) => {
     res.status(400).json({ status: "failed", message: error.message });
   }
 };
+
+module.exports.deleteOne = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) throw Error("Deleting user failed");
+    res.status(200).json({ status: "success", data: user });
+  } catch (error) {
+    res.status(500).json({ status: "failed", message: error.message });
+  }
+};
