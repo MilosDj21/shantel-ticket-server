@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const { isEmail, isStrongPassword } = require("validator");
+const Ticket = require("./TechTicket");
 
 const userSchema = new mongoose.Schema(
   {
@@ -87,6 +88,19 @@ userSchema.statics.login = async function (email, password) {
   }
   throw Error("Incorrect credentials!");
 };
+
+userSchema.pre("findOneAndDelete", async function (next) {
+  try {
+    const userId = this.getFilter()._id;
+    const ticketList = await Ticket.find({ user: new mongoose.Types.ObjectId(userId) });
+    for (const ticket of ticketList) {
+      await Ticket.findByIdAndDelete(ticket._id);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 
