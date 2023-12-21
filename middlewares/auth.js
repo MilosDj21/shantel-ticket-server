@@ -5,29 +5,26 @@ const Role = require("../models/Role");
 
 const verifyToken = async (req, res, next) => {
   const token = req.cookies.jwt;
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-      if (err) {
-        // console.log(err.message);
-        res.status(401).json({ message: "Unauthorized" });
-      } else {
-        // console.log(decodedToken);
-        req.userId = decodedToken.id;
-      }
-    });
-    try {
+  try {
+    if (token) {
+      jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+        if (err) {
+          // console.log(err.message);
+          throw Error("Invalid token");
+        } else {
+          // console.log(decodedToken);
+          req.userId = decodedToken.id;
+        }
+      });
       const user = await User.findById(req.userId);
-      if (!user) {
-        res.status(401).json({ message: "Invalid User" });
-      } else {
-        next();
-      }
-    } catch (error) {
-      res.status(401).json({ message: "Invalid User" });
-      console.log(error);
+      if (!user) throw Error("Invalid User");
+    } else {
+      throw Error("Missing token");
     }
-  } else {
-    res.status(401).json({ message: "Please Login To Continue" });
+    next();
+  } catch (error) {
+    res.status(401).json({ message: "Unauthorized" });
+    console.log(error);
   }
 };
 
