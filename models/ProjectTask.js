@@ -24,10 +24,15 @@ const projectTaskSchema = new mongoose.Schema(
       ref: "Project",
       required: true,
     },
+    group: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ProjectTaskGroup",
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-const Project = mongoose.model("Project", projectTaskSchema);
+const ProjectTask = mongoose.model("ProjectTask", projectTaskSchema);
 
-module.exports = Project;
+module.exports = ProjectTask;
