@@ -3,7 +3,7 @@ const { saveOne, updateOne, findAll, findOne, deleteOne } = require("../controll
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const multerConf = require("../middlewares/multerConf");
 const { userTicketRouter } = require("./techTicket");
-const { userBonusTaskRouter } = require("./bonusTask");
+const { userProjectRouter } = require("./project");
 
 const router = Router();
 
@@ -19,7 +19,7 @@ router.delete("/:userId", [isAdmin], deleteOne);
 // routes for tickets from a single user, handled in techTicket routes
 router.use("/:userId/techTickets", userTicketRouter);
 
-// routes for bonus tasks from a single user, handled in bonusTasks routes
-router.use("/:userId/bonusTasks", userBonusTaskRouter);
+// routes for projects from a single user, handled in project routes
+router.use("/:userId/projects", userProjectRouter);
 
 module.exports = router;
