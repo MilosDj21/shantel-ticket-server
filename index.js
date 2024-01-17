@@ -12,6 +12,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const roleRoutes = require("./routes/role");
 const techTicketRoutes = require("./routes/techTicket");
+const projectRoutes = require("./routes/project");
 
 const app = express();
 
@@ -49,3 +50,4 @@ app.use(authRoutes);
 app.use("/users", userRoutes);
 app.use("/roles", roleRoutes);
 app.use("/techTickets", techTicketRoutes);
+app.use("/projects", projectRoutes);
