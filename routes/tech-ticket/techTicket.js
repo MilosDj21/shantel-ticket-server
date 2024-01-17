@@ -4,32 +4,26 @@ const { verifyToken, isAdmin } = require("../../middlewares/auth");
 const ticketMessageRouter = require("./techTicketMessage");
 const ticketLogRouter = require("./techTicketLog");
 
-const router = Router();
-
-router.use(verifyToken);
-
 // routes for all tickets, only admin can access them directly
-router.get("/:ticketId", [isAdmin], findOne);
-router.get("/", [isAdmin], findAll);
-router.get("/search/:searchValue", [isAdmin], findAll);
-router.post("/", [isAdmin], saveOne);
-router.patch("/", [isAdmin], updateOne);
-router.delete("/:ticketId", [isAdmin], deleteOne);
-
+const adminTicketRouter = Router();
+adminTicketRouter.use(verifyToken);
+adminTicketRouter.get("/:ticketId", [isAdmin], findOne);
+adminTicketRouter.get("/", [isAdmin], findAll);
+adminTicketRouter.get("/search/:searchValue", [isAdmin], findAll);
+adminTicketRouter.post("/", [isAdmin], saveOne);
+adminTicketRouter.patch("/", [isAdmin], updateOne);
+adminTicketRouter.delete("/:ticketId", [isAdmin], deleteOne);
 //routes for ticket messages, they are accessed from ticket, so user don't need to be checked
-router.use("/:ticketId/ticketMessage", ticketMessageRouter);
-
+adminTicketRouter.use("/:ticketId/ticketMessage", ticketMessageRouter);
 //routes for ticket logs, they are accessed from ticket, so user don't need to be checked
-router.use("/:ticketId/ticketLog", ticketLogRouter);
+adminTicketRouter.use("/:ticketId/ticketLog", ticketLogRouter);
 
 // routes for user tickets
 const userTicketRouter = Router({ mergeParams: true });
-
 userTicketRouter.get("/:ticketId", findOneByUser);
 userTicketRouter.get("/", findAllByUser);
 userTicketRouter.get("/search/:searchValue", findAllByUser);
 userTicketRouter.post("/", saveOneByUser);
 userTicketRouter.patch("/", updateOneByUser);
 
-const ticketRouter = (module.exports = router);
-ticketRouter.userTicketRouter = userTicketRouter;
+module.exports = { adminTicketRouter, userTicketRouter };
