@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { verifyToken, isAdmin } = require("../middlewares/auth");
+const { verifyToken, isAdmin } = require("../../middlewares/auth");
 const {
   adminFindOne,
   adminFindAll,
@@ -16,7 +16,7 @@ const {
   projectViewSaveOne,
   projectViewUpdateOne,
   projectViewDeleteOne,
-} = require("../controllers/project/projectTask");
+} = require("../../controllers/project/projectTask");
 const messageRouter = require("./projectTaskMessage");
 
 // routes for all tasks, only admin can access them directly

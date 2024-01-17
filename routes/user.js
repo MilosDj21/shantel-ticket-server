@@ -2,9 +2,9 @@ const { Router } = require("express");
 const { saveOne, updateOne, findAll, findOne, deleteOne } = require("../controllers/user");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const multerConf = require("../middlewares/multerConf");
-const { userTicketRouter } = require("./techTicket");
-const { userProjectRouter } = require("./project");
-const { taskViewRouter: taskRouter } = require("./projectTask");
+const { userTicketRouter } = require("./tech-ticket/techTicket");
+const { userProjectRouter } = require("./project/project");
+const { taskViewRouter: taskRouter } = require("./project/projectTask");
 
 const router = Router();
 

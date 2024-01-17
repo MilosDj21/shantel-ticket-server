@@ -11,9 +11,9 @@ const morgan = require("morgan");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const roleRoutes = require("./routes/role");
-const techTicketRoutes = require("./routes/techTicket");
-const projectRoutes = require("./routes/project");
-const { adminTaskRouter: projectTaskRoutes } = require("./routes/projectTask");
+const techTicketRoutes = require("./routes/tech-ticket/techTicket");
+const projectRoutes = require("./routes/project/project");
+const { adminTaskRouter: projectTaskRoutes } = require("./routes/project/projectTask");
 
 const app = express();
 
