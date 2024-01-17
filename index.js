@@ -12,7 +12,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const roleRoutes = require("./routes/role");
 const techTicketRoutes = require("./routes/tech-ticket/techTicket");
-const projectRoutes = require("./routes/project/project");
+const { adminProjectRouter: projectRoutes } = require("./routes/project/project");
 const { adminTaskRouter: projectTaskRoutes } = require("./routes/project/projectTask");
 
 const app = express();
