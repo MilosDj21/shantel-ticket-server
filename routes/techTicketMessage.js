@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../controllers/techTicketMessage");
+const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../controllers/tech-ticket/techTicketMessage");
 const multerConf = require("../middlewares/multerConf");
 
 const router = Router({ mergeParams: true });

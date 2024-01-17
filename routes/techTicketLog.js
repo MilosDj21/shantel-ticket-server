@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { findOne, findAllByTicket, saveOne, updateOne, deleteOne } = require("../controllers/techTicketLog");
+const { findOne, findAllByTicket, saveOne, updateOne, deleteOne } = require("../controllers/tech-ticket/techTicketLog");
 
 const router = Router({ mergeParams: true });
 

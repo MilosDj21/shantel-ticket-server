@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { findOne, findAll, saveOne, updateOne, deleteOne, findOneByUser, findAllByUser, saveOneByUser, updateOneByUser } = require("../controllers/techTicket");
+const { findOne, findAll, saveOne, updateOne, deleteOne, findOneByUser, findAllByUser, saveOneByUser, updateOneByUser } = require("../controllers/tech-ticket/techTicket");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const ticketMessageRouter = require("./techTicketMessage");
 const ticketLogRouter = require("./techTicketLog");

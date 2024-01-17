@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { findOne, findAll, saveOne, updateOne, deleteOne, findOneByUser, findAllByUser, saveOneByUser, updateOneByUser } = require("../controllers/project");
+const { findOne, findAll, saveOne, updateOne, deleteOne, findOneByUser, findAllByUser, saveOneByUser, updateOneByUser } = require("../controllers/project/project");
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const { projectViewRouter: taskRouter } = require("./projectTask");
 const taskGroupRouter = require("./projectTaskGroup");

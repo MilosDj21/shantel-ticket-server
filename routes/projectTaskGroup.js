@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../controllers/projectTaskGroup");
+const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../controllers/project/projectTaskGroup");
 
 const router = Router({ mergeParams: true });
 
