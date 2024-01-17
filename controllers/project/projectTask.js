@@ -1,3 +1,10 @@
+module.exports.adminFindOne = async (req, res) => {
+  res.status(200).json({ message: "admin find one" });
+};
+module.exports.adminFindAll = async (req, res) => {};
+module.exports.adminSaveOne = async (req, res) => {};
+module.exports.adminUpdateOne = async (req, res) => {};
+module.exports.adminDeleteOne = async (req, res) => {};
 module.exports.taskViewFindOne = async (req, res) => {
   res.status(200).json({ message: "all good task view find one" });
 };

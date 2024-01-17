@@ -13,6 +13,7 @@ const userRoutes = require("./routes/user");
 const roleRoutes = require("./routes/role");
 const techTicketRoutes = require("./routes/techTicket");
 const projectRoutes = require("./routes/project");
+const { adminTaskRouter: projectTaskRoutes } = require("./routes/projectTask");
 
 const app = express();
 
@@ -51,3 +52,4 @@ app.use("/users", userRoutes);
 app.use("/roles", roleRoutes);
 app.use("/techTickets", techTicketRoutes);
 app.use("/projects", projectRoutes);
+app.use("/tasks", projectTaskRoutes);
