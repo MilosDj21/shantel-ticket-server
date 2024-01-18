@@ -26,7 +26,7 @@ adminTaskRouter.get("/:taskId", [isAdmin], adminFindOne);
 adminTaskRouter.get("/", [isAdmin], adminFindAll);
 adminTaskRouter.get("/search/:searchValue", [isAdmin], adminFindAll);
 adminTaskRouter.post("/", [isAdmin], adminSaveOne);
-adminTaskRouter.patch("/", [isAdmin], adminUpdateOne);
+adminTaskRouter.patch("/:taskId", [isAdmin], adminUpdateOne);
 adminTaskRouter.delete("/:taskId", [isAdmin], adminDeleteOne);
 //routes for task messages, handled in projectTaskMessage routes
 adminTaskRouter.use("/:taskId/taskMessages", messageRouter);

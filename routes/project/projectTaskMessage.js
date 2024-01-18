@@ -9,7 +9,7 @@ router.use(multerConf);
 router.get("/:messageId", findOne);
 router.get("/", findAll);
 router.post("/", saveOne);
-router.patch("/", updateOne);
+router.patch("/:messageId", updateOne);
 router.delete("/:messageId", deleteOne);
 
 module.exports = router;
