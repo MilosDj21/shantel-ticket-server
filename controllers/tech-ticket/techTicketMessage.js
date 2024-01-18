@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
-const TicketMessage = require("../../models/TechTicketMessage");
+const TicketMessage = require("../../models/tech-ticket/TechTicketMessage");
 
 module.exports.findOne = async (req, res) => {
   const { ticketId, messageId } = req.params;

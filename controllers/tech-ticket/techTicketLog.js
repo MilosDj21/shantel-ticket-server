@@ -1,4 +1,4 @@
-const TicketLog = require("../../models/TechTicketLog");
+const TicketLog = require("../../models/tech-ticket/TechTicketLog");
 const mongoose = require("mongoose");
 
 module.exports.findOne = async (req, res) => {};

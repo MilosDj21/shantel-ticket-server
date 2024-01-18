@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const Ticket = require("../../models/TechTicket");
-const TicketMessage = require("../../models/TechTicketMessage");
+const Ticket = require("../../models/tech-ticket/TechTicket");
+const TicketMessage = require("../../models/tech-ticket/TechTicketMessage");
 const User = require("../../models/User");
 
 // controllers for all tickets

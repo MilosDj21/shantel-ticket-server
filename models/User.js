@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const { isEmail, isStrongPassword } = require("validator");
-const Ticket = require("./TechTicket");
+const Ticket = require("./tech-ticket/TechTicket");
 
 const userSchema = new mongoose.Schema(
   {
