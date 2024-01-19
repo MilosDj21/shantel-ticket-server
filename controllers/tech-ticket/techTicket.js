@@ -198,9 +198,10 @@ module.exports.saveOne = async (req, res) => {
 };
 
 module.exports.updateOne = async (req, res) => {
-  const { id, title, status, category, seenByAdmin, userId } = req.body;
+  const {ticketId} = req.params;
+  const { title, status, category, seenByAdmin, userId } = req.body;
   try {
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) throw Error("Invalid ticket id");
+    if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
     const ticketObj = {};
     if (title) ticketObj.title = title;
     if (status) ticketObj.status = status;
@@ -208,7 +209,7 @@ module.exports.updateOne = async (req, res) => {
     if (seenByAdmin) ticketObj.seenByAdmin = seenByAdmin;
     if (userId) ticketObj.user = userId;
 
-    const ticket = await Ticket.findByIdAndUpdate(id, { ...ticketObj }, { new: true });
+    const ticket = await Ticket.findByIdAndUpdate(ticketId, { ...ticketObj }, { new: true });
     if (!ticket) throw Error("Updating ticket failed");
     res.status(200).json({ status: "success", data: ticket });
   } catch (error) {
@@ -383,12 +384,13 @@ module.exports.saveOneByUser = async (req, res) => {
 
 module.exports.updateOneByUser = async (req, res) => {
   // USER CAN ONLY UPDATE STATUS(WHEN USER REPLY, STATUS CHANGES TO NEW)
-  const { id, status } = req.body;
+  const { ticketId } = req.params;
+  const { status } = req.body;
   try {
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) throw Error("Invalid ticket id");
+    if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
     if (!status) throw Error("All fields must be filled");
 
-    const ticket = await Ticket.findByIdAndUpdate(id, { status }, { new: true });
+    const ticket = await Ticket.findByIdAndUpdate(ticketId, { status }, { new: true });
     if (!ticket) throw Error("Updating ticket failed");
     res.status(200).json({ status: "success", data: ticket });
   } catch (error) {

@@ -55,18 +55,18 @@ module.exports.saveOne = async (req, res) => {
 };
 
 module.exports.updateOne = async (req, res) => {
-  const { ticketId } = req.params;
-  const { id, message, userId } = req.body;
+  const { ticketId, messageId } = req.params;
+  const { message, userId } = req.body;
   const messageImage = req.file;
   try {
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) throw Error("Invalid ticket message id");
+    if (!messageId || !mongoose.Types.ObjectId.isValid(messageId)) throw Error("Invalid ticket message id");
     const messageObj = {};
     if (message) messageObj.message = message;
     if (userId) messageObj.user = userId;
     if (ticketId) messageObj.ticket = ticketId;
     if (messageImage) messageObj.image = messageImage.path;
 
-    const ticketMessage = await TicketMessage.findByIdAndUpdate(id, { ...messageObj }, { new: true });
+    const ticketMessage = await TicketMessage.findByIdAndUpdate(messageId, { ...messageObj }, { new: true });
     if (!ticketMessage) throw Error("Updating ticket message failed");
     res.status(200).json({ status: "success", data: ticketMessage });
   } catch (error) {

@@ -14,7 +14,7 @@ router.get("/:userId", [isAdmin], findOne);
 router.get("/", [isAdmin], findAll);
 router.get("/search/:searchValue", [isAdmin], findAll);
 router.post("/", [isAdmin, multerConf], saveOne);
-router.patch("/", [isAdmin, multerConf], updateOne);
+router.patch("/:userId", [isAdmin, multerConf], updateOne);
 router.delete("/:userId", [isAdmin], deleteOne);
 
 // routes for tickets from a specific user, handled in techTicket routes

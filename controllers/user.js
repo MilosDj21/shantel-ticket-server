@@ -67,10 +67,11 @@ module.exports.saveOne = async (req, res) => {
 };
 
 module.exports.updateOne = async (req, res) => {
-  const { id, email, firstName, lastName, password, roles } = req.body;
+  const { userId } = req.params;
+  const { email, firstName, lastName, password, roles } = req.body;
   const profileImage = req.file;
   try {
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) throw Error("Invalid user id");
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
     const user = {};
     if (email) user.email = email;
     if (firstName) user.firstName = firstName;
@@ -78,7 +79,7 @@ module.exports.updateOne = async (req, res) => {
     if (password) user.password = password;
     if (roles) user.roles = roles;
     if (profileImage) user.profileImage = profileImage.path;
-    const savedUser = await User.modifyOne(id, user);
+    const savedUser = await User.modifyOne(userId, user);
     res.status(200).json({ status: "success", message: "Updated Successfully" });
   } catch (error) {
     if (profileImage) {

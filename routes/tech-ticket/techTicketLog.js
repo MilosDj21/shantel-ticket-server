@@ -6,7 +6,7 @@ const router = Router({ mergeParams: true });
 router.get("/:logId", findOne);
 router.get("/", findAllByTicket);
 router.post("/", saveOne);
-router.patch("/", updateOne);
+router.patch("/:logId", updateOne);
 router.delete("/:logId", deleteOne);
 
 module.exports = router;

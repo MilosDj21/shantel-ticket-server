@@ -11,7 +11,7 @@ adminTicketRouter.get("/:ticketId", [isAdmin], findOne);
 adminTicketRouter.get("/", [isAdmin], findAll);
 adminTicketRouter.get("/search/:searchValue", [isAdmin], findAll);
 adminTicketRouter.post("/", [isAdmin], saveOne);
-adminTicketRouter.patch("/", [isAdmin], updateOne);
+adminTicketRouter.patch("/:ticketId", [isAdmin], updateOne);
 adminTicketRouter.delete("/:ticketId", [isAdmin], deleteOne);
 //routes for ticket messages, they are accessed from ticket, so user don't need to be checked
 adminTicketRouter.use("/:ticketId/ticketMessage", ticketMessageRouter);
@@ -24,6 +24,6 @@ userTicketRouter.get("/:ticketId", findOneByUser);
 userTicketRouter.get("/", findAllByUser);
 userTicketRouter.get("/search/:searchValue", findAllByUser);
 userTicketRouter.post("/", saveOneByUser);
-userTicketRouter.patch("/", updateOneByUser);
+userTicketRouter.patch("/:ticketId", updateOneByUser);
 
 module.exports = { adminTicketRouter, userTicketRouter };
