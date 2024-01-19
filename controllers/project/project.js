@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 //only admin can access these controllers
 module.exports.adminFindOne = async (req, res) => {
-  const projectId = req.params.projectId;
+  const { projectId } = req.params;
   try {
     if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) throw Error("Invalid project id");
     const projects = await Project.aggregate([
@@ -262,4 +262,20 @@ module.exports.saveOneByUser = async (req, res) => {
     res.status(500).json({ status: "failed", message: error.message });
   }
 };
-module.exports.updateOneByUser = async (req, res) => {};
+module.exports.updateOneByUser = async (req, res) => {
+  const { userId, projectId } = req.params;
+  const { title, status } = req.body;
+  try {
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("User id invalid");
+    if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) throw Error("Project id invalid");
+    const projectObject = {};
+    if (title) projectObject.title = title;
+    if (status) projectObject.status = status;
+
+    const project = await Project.findByIdAndUpdate(projectId, { ...projectObject }, { new: true });
+    if (!project) throw Error("Updating project failed");
+    res.status(200).json({ status: "success", data: project });
+  } catch (error) {
+    res.status(500).json({ status: "failed", message: error.message });
+  }
+};
