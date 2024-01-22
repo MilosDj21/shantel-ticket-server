@@ -20,10 +20,4 @@ router.delete("/:userId", [isAdmin], deleteOne);
 // routes for tickets from a specific user, handled in techTicket routes
 router.use("/:userId/techTickets", userTicketRouter);
 
-// routes for projects from a specific user, handled in project routes
-router.use("/:userId/projects", userProjectRouter);
-
-//routes for project tasks from a specific user, handled in projectTask routes
-router.use("/:userId/tasks", taskRouter);
-
 module.exports = router;
