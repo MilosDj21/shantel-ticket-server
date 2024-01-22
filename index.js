@@ -12,8 +12,10 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const roleRoutes = require("./routes/role");
 const { adminTicketRouter: techTicketRoutes } = require("./routes/tech-ticket/techTicket");
-const { adminProjectRouter: projectRoutes } = require("./routes/project/project");
-const { adminTaskRouter: projectTaskRoutes } = require("./routes/project/projectTask");
+const projectRoutes = require("./routes/project/project");
+const projectTaskRoutes = require("./routes/project/projectTask");
+const projectTaskGroupRoutes = require("./routes/project/projectTaskGroup");
+const projectTaskMessageRoutes = require("./routes/project/projectTaskMessage");
 
 const app = express();
 
@@ -52,4 +54,6 @@ app.use("/users", userRoutes);
 app.use("/roles", roleRoutes);
 app.use("/techTickets", techTicketRoutes);
 app.use("/projects", projectRoutes);
-app.use("/tasks", projectTaskRoutes);
+app.use("/projectTasks", projectTaskRoutes);
+app.use("/projectTaskGroups", projectTaskGroupRoutes);
+app.use("/projectTaskMessages", projectTaskMessageRoutes);
