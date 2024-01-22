@@ -18,6 +18,11 @@ const verifyToken = async (req, res, next) => {
       });
       const user = await User.findById(req.userId);
       if (!user) throw Error("Invalid User");
+
+      const adminRoles = await Role.find().or([{ name: "Admin" }, { name: "Super Admin" }]);
+      if (user.roles.includes(adminRoles[0]._id.toString()) || user.roles.includes(adminRoles[1]._id.toString())) {
+        req.userIsAdmin = true;
+      }
     } else {
       throw Error("Missing token");
     }
@@ -35,7 +40,6 @@ const isAdmin = async (req, res, next) => {
 
     const adminRoles = await Role.find().or([{ name: "Admin" }, { name: "Super Admin" }]);
     if (user.roles.includes(adminRoles[0]._id.toString()) || user.roles.includes(adminRoles[1]._id.toString())) {
-      req.userIsAdmin = true;
       next();
     } else {
       throw Error("Require Admin role");
