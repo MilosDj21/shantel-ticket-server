@@ -53,6 +53,8 @@ app.use(authRoutes);
 app.use("/users", userRoutes);
 app.use("/roles", roleRoutes);
 app.use("/techTickets", techTicketRoutes);
+
+// Project routes
 app.use("/projects", projectRoutes);
 app.use("/projectTasks", projectTaskRoutes);
 app.use("/projectTaskGroups", projectTaskGroupRoutes);
