@@ -1,111 +1,92 @@
-const ProjectTask = require("../../models/project/ProjectTask");
-const mongoose = require("mongoose");
+const { adminFindOne, adminFindAll, adminUpdateOne, adminDeleteOne, userFindOne, userFindAll, userSaveOne, userUpdateOne, userDeleteOne } = require("../../services/project/project");
 
-// only admin can access these controllers
-module.exports.adminFindOne = async (req, res) => {
+module.exports.findOne = async (req, res) => {
+  const { userId, userIsAdmin } = req;
   const { taskId } = req.params;
+  let task;
   try {
-    if (!taskId || mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-    const tasks = await ProjectTask.aggregate([
-      { $match: { _id: new mongoose.Types.ObjectId(taskId) } },
-      { $limit: 1 },
-      {
-        $lookup: {
-          from: "users",
-          localField: "assignedUsers",
-          foreignField: "_id",
-          as: "assignedUsers",
-        },
-      },
-      {
-        $lookup: {
-          from: "projettaskmessages",
-          localField: "_id",
-          foreignField: "task",
-          as: "messages",
-          pipeline: [
-            {
-              $lookup: {
-                from: "users",
-                localField: "user",
-                foreignField: "_id",
-                as: "user",
-              },
-            },
-            {
-              $unwind: "$user",
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: "projects",
-          localField: "project",
-          foreignField: "_id",
-          as: "project",
-          pipeline: [
-            {
-              $lookup: {
-                from: "users",
-                localField: "user",
-                foreignField: "_id",
-                as: "user",
-              },
-            },
-            {
-              $unwind: "$user",
-            },
-          ],
-        },
-      },
-      {
-        $unwind: "$project",
-      },
-      {
-        $lookup: {
-          from: "projectgroups",
-          localField: "group",
-          foreignField: "_id",
-          as: "group",
-        },
-      },
-      {
-        $unwind: "$group",
-      },
-      {
-        $project: {
-          "assignedUsers.password": 0,
-          "messages.user.password": 0,
-          "project.user.password": 0,
-        },
-      },
-    ]);
-    if (!tasks) throw Error("No such task");
-    res.status(200).json({ status: "success", data: tasks[0] });
+    if (userIsAdmin) {
+      task = await adminFindOne(taskId);
+    } else {
+      task = await userFindOne(userId, taskId);
+    }
+    res.status(200).json({ status: "success", data: task });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
   }
 };
-module.exports.adminFindAll = async (req, res) => {};
-module.exports.adminSaveOne = async (req, res) => {};
-module.exports.adminUpdateOne = async (req, res) => {};
-module.exports.adminDeleteOne = async (req, res) => {};
 
-// controllers for regular users, for task view
-module.exports.taskViewFindOne = async (req, res) => {
-  res.status(200).json({ message: "all good task view find one" });
+module.exports.findAll = async (req, res) => {
+  const { userId, userIsAdmin } = req;
+  const { searchValue } = req.params;
+  let tasks;
+  try {
+    if (userIsAdmin) {
+      tasks = await adminFindAll(searchValue);
+    } else {
+      tasks = await userFindAll(userId, searchValue);
+    }
+    res.status(200).json({ status: "success", data: tasks });
+  } catch (error) {
+    res.status(500).json({ status: "failed", message: error.message });
+  }
 };
-module.exports.taskViewFindAll = async (req, res) => {};
-module.exports.taskViewSaveOne = async (req, res) => {};
-module.exports.taskViewUpdateOne = async (req, res) => {};
-module.exports.taskViewDeleteOne = async (req, res) => {};
 
-// controllers for regular users, for project view
-module.exports.projectViewFindOne = async (req, res) => {
-  res.status(200).json({ message: "all good project view find one" });
+module.exports.saveOne = async (req, res) => {
+  const { userId, userIsAdmin } = req;
+  const { title, dueTime, assignedUsers, project, group } = req.body;
+  try {
+    const taskObject = {};
+    if (title) taskObject.title = title;
+    if (dueTime) taskObject.dueTime = dueTime;
+    if (assignedUsers) taskObject.assignedUsers = assignedUsers;
+    if (project) taskObject.project = project;
+    if (group) taskObject.group = group;
+    // there is no difference between user and admin creating task, so only one function exists for this job
+    const task = await userSaveOne(userId, taskObject);
+    res.status(200).json({ status: "success", data: task });
+  } catch (error) {
+    res.status(500).json({ status: "failed", message: error.message });
+  }
 };
-module.exports.projectViewFindAll = async (req, res) => {};
-module.exports.projectViewSaveOne = async (req, res) => {};
-module.exports.projectViewUpdateOne = async (req, res) => {};
-module.exports.projectViewDeleteOne = async (req, res) => {};
+
+module.exports.updateOne = async (req, res) => {
+  const { userId, userIsAdmin } = req;
+  const { taskId } = req.params;
+  const { title, status, dueTime, assignedUsers, project, group } = req.body;
+  let task;
+  try {
+    const taskObject = {};
+    if (title) taskObject.title = title;
+    if (status) taskObject.status = status;
+    if (dueTime) taskObject.dueTime = dueTime;
+    if (assignedUsers) taskObject.assignedUsers = assignedUsers;
+    if (project) taskObject.project = project;
+    if (group) taskObject.group = group;
+
+    if (userIsAdmin) {
+      task = await adminUpdateOne(taskId, taskObject);
+    } else {
+      task = await userUpdateOne(userId, taskId, taskObject);
+    }
+    res.status(200).json({ status: "success", data: task });
+  } catch (error) {
+    res.status(500).json({ status: "failed", message: error.message });
+  }
+};
+
+module.exports.deleteOne = async (req, res) => {
+  const { userIsAdmin } = req;
+  const { taskId } = req.params;
+  let task;
+  try {
+    if (userIsAdmin) {
+      task = await adminDeleteOne(taskId);
+    } else {
+      throw Error("Only admin can access this");
+    }
+    res.status(200).json({ status: "success", data: task });
+  } catch (error) {
+    res.status(500).json({ status: "failed", message: error.message });
+  }
+};
