@@ -19,6 +19,7 @@ const projectTaskMessageRoutes = require("./routes/project/projectTaskMessage");
 const clientRoutes = require("./routes/project/client");
 const clientLinkRoutes = require("./routes/project/clientLink");
 const postRequestRoutes = require("./routes/project/postRequest");
+const websiteRoutes = require("./routes/project/website");
 
 const app = express();
 
@@ -65,3 +66,4 @@ app.use("/projectTaskMessages", projectTaskMessageRoutes);
 app.use("/clients", clientRoutes);
 app.use("/clientLinks", clientLinkRoutes);
 app.use("/postRequests", postRequestRoutes);
+app.use("/websites", websiteRoutes);
