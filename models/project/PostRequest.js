@@ -3,11 +3,9 @@ const mongoose = require("mongoose");
 const postRequestSchema = new mongoose.Schema(
   {
     website: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Website",
       required: true,
-    },
-    websiteCategory: {
-      type: String,
     },
     postCategory: {
       type: String,
