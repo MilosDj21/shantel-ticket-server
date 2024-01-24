@@ -17,6 +17,7 @@ const projectTaskRoutes = require("./routes/project/projectTask");
 const projectTaskGroupRoutes = require("./routes/project/projectTaskGroup");
 const projectTaskMessageRoutes = require("./routes/project/projectTaskMessage");
 const clientRoutes = require("./routes/project/client");
+const clientLinkRoutes = require("./routes/project/clientLink");
 
 const app = express();
 
@@ -60,4 +61,5 @@ app.use("/projects", projectRoutes);
 app.use("/projectTasks", projectTaskRoutes);
 app.use("/projectTaskGroups", projectTaskGroupRoutes);
 app.use("/projectTaskMessages", projectTaskMessageRoutes);
-app.use("/client", clientRoutes);
+app.use("/clients", clientRoutes);
+app.use("/clientLinks", clientLinkRoutes);
