@@ -46,7 +46,7 @@ module.exports.saveOne = async (req, res) => {
     res.status(200).json({ status: "success", data: ticketMessage });
   } catch (error) {
     if (messageImage) {
-      fs.unlink(path.join(__dirname, `../${messageImage.path}`), (error) => {
+      fs.unlink(path.join(__dirname, `../../${messageImage.path}`), (error) => {
         if (error) console.log(error);
       });
     }
@@ -71,7 +71,7 @@ module.exports.updateOne = async (req, res) => {
     res.status(200).json({ status: "success", data: ticketMessage });
   } catch (error) {
     if (messageImage) {
-      fs.unlink(path.join(__dirname, `../${messageImage.path}`), (error) => {
+      fs.unlink(path.join(__dirname, `../../${messageImage.path}`), (error) => {
         if (error) console.log(error);
       });
     }
