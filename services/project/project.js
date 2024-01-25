@@ -139,8 +139,8 @@ module.exports.adminFindOne = async (projectId) => {
         "user.password": 0,
         "tasks.assignedUsers.password": 0,
         "tasks.messages.user.password": 0,
-        "postrequests.editor.password": 0,
-        "postrequests.copywriter.password": 0,
+        "postRequests.editor.password": 0,
+        "postRequests.copywriter.password": 0,
       },
     },
   ]);
