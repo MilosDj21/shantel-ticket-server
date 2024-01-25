@@ -68,10 +68,79 @@ module.exports.adminFindOne = async (projectId) => {
       },
     },
     {
+      $lookup: {
+        from: "postrequests",
+        localField: "_id",
+        foreignField: "project",
+        as: "postRequests",
+        pipeline: [
+          {
+            $lookup: {
+              from: "websites",
+              localField: "website",
+              foreignField: "_id",
+              as: "website",
+            },
+          },
+          {
+            $unwind: "$website",
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "editor",
+              foreignField: "_id",
+              as: "editor",
+            },
+          },
+          {
+            $unwind: "$editor",
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "copywriter",
+              foreignField: "_id",
+              as: "copywriter",
+            },
+          },
+          {
+            $unwind: "$copywriter",
+          },
+          {
+            $lookup: {
+              from: "clientlinks",
+              localField: "clientPaidLink",
+              foreignField: "_id",
+              as: "clientPaidLink",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "clients",
+                    localField: "client",
+                    foreignField: "_id",
+                    as: "client",
+                  },
+                },
+                {
+                  $unwind: "$client",
+                },
+              ],
+            },
+          },
+          {
+            $unwind: "$clientPaidLink",
+          },
+        ],
+      },
+    },
+    {
       $project: {
         "user.password": 0,
         "tasks.assignedUsers.password": 0,
         "tasks.messages.user.password": 0,
+        "postrequests.editor.password": 0,
+        "postrequests.copywriter.password": 0,
       },
     },
   ]);
@@ -189,10 +258,79 @@ module.exports.userFindOne = async (userId, projectId) => {
       },
     },
     {
+      $lookup: {
+        from: "postrequests",
+        localField: "_id",
+        foreignField: "project",
+        as: "postRequests",
+        pipeline: [
+          {
+            $lookup: {
+              from: "websites",
+              localField: "website",
+              foreignField: "_id",
+              as: "website",
+            },
+          },
+          {
+            $unwind: "$website",
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "editor",
+              foreignField: "_id",
+              as: "editor",
+            },
+          },
+          {
+            $unwind: "$editor",
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "copywriter",
+              foreignField: "_id",
+              as: "copywriter",
+            },
+          },
+          {
+            $unwind: "$copywriter",
+          },
+          {
+            $lookup: {
+              from: "clientlinks",
+              localField: "clientPaidLink",
+              foreignField: "_id",
+              as: "clientPaidLink",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "clients",
+                    localField: "client",
+                    foreignField: "_id",
+                    as: "client",
+                  },
+                },
+                {
+                  $unwind: "$client",
+                },
+              ],
+            },
+          },
+          {
+            $unwind: "$clientPaidLink",
+          },
+        ],
+      },
+    },
+    {
       $project: {
         "user.password": 0,
         "tasks.assignedUsers.password": 0,
         "tasks.messages.user.password": 0,
+        "postrequests.editor.password": 0,
+        "postrequests.copywriter.password": 0,
       },
     },
   ]);
