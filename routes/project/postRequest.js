@@ -6,11 +6,11 @@ const router = Router();
 
 router.use(verifyToken);
 
-router.get("/:postRequestId", findOne);
+router.get("/:postId", findOne);
 router.get("/", findAll);
 router.get("/search/:searchValue", findAll);
 router.post("/", saveOne);
-router.patch("/:postRequestId", updateOne);
-router.delete("/:postRequestId", deleteOne);
+router.patch("/:postId", updateOne);
+router.delete("/:postId", deleteOne);
 
 module.exports = router;
