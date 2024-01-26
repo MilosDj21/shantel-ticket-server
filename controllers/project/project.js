@@ -1,4 +1,4 @@
-const { adminFindOne, adminFindAll, adminUpdateOne, adminDeleteOne, userFindOne, userFindAll, userSaveOne, userUpdateOne, userDeleteOne } = require("../../services/project/project");
+const { findOne, findAll, updateOne, deleteOne } = require("../../services/project/project");
 
 module.exports.findOne = async (req, res) => {
   const { userId, userIsAdmin } = req;
@@ -6,9 +6,9 @@ module.exports.findOne = async (req, res) => {
   let project;
   try {
     if (userIsAdmin) {
-      project = await adminFindOne(projectId);
+      project = await findOne(null, projectId);
     } else {
-      project = await userFindOne(userId, projectId);
+      project = await findOne(userId, projectId);
     }
     res.status(200).json({ status: "success", data: project });
   } catch (error) {
@@ -22,9 +22,9 @@ module.exports.findAll = async (req, res) => {
   let projects;
   try {
     if (userIsAdmin) {
-      projects = await adminFindAll(searchValue);
+      projects = await findAll(null, searchValue);
     } else {
-      projects = await userFindAll(userId, searchValue);
+      projects = await findAll(userId, searchValue);
     }
     res.status(200).json({ status: "success", data: projects });
   } catch (error) {
@@ -37,7 +37,7 @@ module.exports.saveOne = async (req, res) => {
   const { title } = req.body;
   try {
     // TODO: admin does not need to save new projects, maybe implement later if needed
-    const project = await userSaveOne(userId, title);
+    const project = await saveOne(userId, title);
     res.status(200).json({ status: "success", data: project });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
@@ -56,9 +56,9 @@ module.exports.updateOne = async (req, res) => {
     if (user) projectObject.user = user;
 
     if (userIsAdmin) {
-      project = await adminUpdateOne(projectId, projectObject);
+      project = await updateOne(null, projectId, projectObject);
     } else {
-      project = await userUpdateOne(userId, projectId, projectObject);
+      project = await updateOne(userId, projectId, projectObject);
     }
     res.status(200).json({ status: "success", data: project });
   } catch (error) {
@@ -71,7 +71,7 @@ module.exports.deleteOne = async (req, res) => {
   let project;
   try {
     if (userIsAdmin) {
-      project = await adminDeleteOne(projectId);
+      project = await deleteOne(projectId);
     } else {
       throw Error("Only admin can access this");
     }
