@@ -26,7 +26,10 @@ module.exports.findOne = async (postId) => {
       },
     },
     {
-      $unwind: "$editor",
+      $unwind: {
+        path: "$editor",
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $lookup: {
@@ -37,7 +40,10 @@ module.exports.findOne = async (postId) => {
       },
     },
     {
-      $unwind: "$copywriter",
+      $unwind: {
+        path: "$copywriter",
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $lookup: {
@@ -53,7 +59,9 @@ module.exports.findOne = async (postId) => {
     {
       $project: {
         "editor.password": 0,
+        "editor.secret": 0,
         "copywriter.password": 0,
+        "copywriter.secret": 0,
       },
     },
   ]);
