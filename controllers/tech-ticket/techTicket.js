@@ -68,8 +68,11 @@ module.exports.findOne = async (req, res) => {
       {
         $project: {
           "user.password": 0,
+          "user.secret": 0,
           "messages.user.password": 0,
+          "messages.user.secret": 0,
           "logs.user.password": 0,
+          "logs.user.secret": 0,
         },
       },
     ]);
@@ -142,8 +145,11 @@ module.exports.findAll = async (req, res) => {
       {
         $project: {
           "user.password": 0,
+          "user.secret": 0,
           "messages.user.password": 0,
+          "messages.user.secret": 0,
           "logs.user.password": 0,
+          "logs.user.secret": 0,
         },
       },
     ]);
@@ -198,7 +204,7 @@ module.exports.saveOne = async (req, res) => {
 };
 
 module.exports.updateOne = async (req, res) => {
-  const {ticketId} = req.params;
+  const { ticketId } = req.params;
   const { title, status, category, seenByAdmin, userId } = req.body;
   try {
     if (!ticketId || !mongoose.Types.ObjectId.isValid(ticketId)) throw Error("Invalid ticket id");
@@ -274,7 +280,9 @@ module.exports.findOneByUser = async (req, res) => {
       {
         $project: {
           "user.password": 0,
+          "user.secret": 0,
           "messages.user.password": 0,
+          "messages.user.secret": 0,
         },
       },
     ]);
@@ -327,7 +335,9 @@ module.exports.findAllByUser = async (req, res) => {
       {
         $project: {
           "user.password": 0,
+          "user.secret": 0,
           "messages.user.password": 0,
+          "messages.user.secret": 0,
         },
       },
     ]);
