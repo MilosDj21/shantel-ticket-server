@@ -73,8 +73,11 @@ module.exports.adminFindOne = async (taskId) => {
     {
       $project: {
         "assignedUsers.password": 0,
+        "assignedUsers.secret": 0,
         "messages.user.password": 0,
+        "messages.user.secret": 0,
         "project.user.password": 0,
+        "project.user.secret": 0,
       },
     },
   ]);
@@ -119,7 +122,9 @@ module.exports.adminFindAll = async (searchValue) => {
     {
       $project: {
         "assignedUsers.password": 0,
+        "assignedUsers.secret": 0,
         "project.user.password": 0,
+        "project.user.secret": 0,
       },
     },
   ]);
@@ -215,8 +220,11 @@ module.exports.userFindOne = async (userId, taskId) => {
     {
       $project: {
         "assignedUsers.password": 0,
+        "assignedUsers.secret": 0,
         "messages.user.password": 0,
+        "messages.user.secret": 0,
         "project.user.password": 0,
+        "project.user.secret": 0,
       },
     },
   ]);
@@ -265,7 +273,9 @@ module.exports.userFindAll = async (userId, searchValue) => {
     {
       $project: {
         "assignedUsers.password": 0,
+        "assignedUsers.secret": 0,
         "project.user.password": 0,
+        "project.user.secret": 0,
       },
     },
   ]);

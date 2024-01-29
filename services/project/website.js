@@ -41,7 +41,9 @@ module.exports.findOne = async (websiteId) => {
     {
       $project: {
         "postRequests.editor.password": 0,
+        "postRequests.editor.secret": 0,
         "postRequests.copywriter.password": 0,
+        "postRequests.copywriter.secret": 0,
       },
     },
   ]);

@@ -146,10 +146,15 @@ module.exports.findOne = async (userId, projectId) => {
     {
       $project: {
         "user.password": 0,
+        "user.secret": 0,
         "tasks.assignedUsers.password": 0,
+        "tasks.assignedUsers.secret": 0,
         "tasks.messages.user.password": 0,
+        "tasks.messages.user.secret": 0,
         "postRequests.editor.password": 0,
+        "postRequests.editor.secret": 0,
         "postRequests.copywriter.password": 0,
+        "postRequests.copywriter.secret": 0,
       },
     },
   ]);
@@ -179,6 +184,7 @@ module.exports.findAll = async (userId, searchValue) => {
       {
         $project: {
           "user.password": 0,
+          "user.secret": 0,
         },
       },
     ]

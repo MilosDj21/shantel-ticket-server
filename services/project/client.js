@@ -73,8 +73,11 @@ module.exports.findOne = async (clientId) => {
     {
       $project: {
         "user.password": 0,
+        "user.secret": 0,
         "links.postRequests.editor.password": 0,
+        "links.postRequests.editor.secret": 0,
         "links.postRequests.copywriter.password": 0,
+        "links.postRequests.copywriter.secret": 0,
       },
     },
   ]);
