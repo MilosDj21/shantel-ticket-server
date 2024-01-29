@@ -74,7 +74,7 @@ module.exports.findAll = async (searchValue) => {
   if (!posts) throw Error("Invalid posts");
   if (searchValue) {
     posts = posts.filter((p) => {
-      p.title.toLowerCase().includes(searchValue.toLowerCase());
+      return p.title.toLowerCase().includes(searchValue.toLowerCase());
     });
   }
   return posts;

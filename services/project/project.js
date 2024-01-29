@@ -163,7 +163,7 @@ module.exports.findOne = async (userId, projectId) => {
 };
 
 module.exports.findAll = async (userId, searchValue) => {
-  if (userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
+  if (userId && !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
   const aggregatePipeline = [];
   if (userId) {
     aggregatePipeline.push({ $match: { user: new mongoose.Types.ObjectId(userId) } });
@@ -192,7 +192,7 @@ module.exports.findAll = async (userId, searchValue) => {
   let projects = await Project.aggregate(aggregatePipeline);
   if (searchValue) {
     projects = projects.filter((p) => {
-      p.title.toLowerCase().includes(searchValue.toLowerCase());
+      return p.title.toLowerCase().includes(searchValue.toLowerCase());
     });
   }
   return projects;
@@ -207,7 +207,7 @@ module.exports.saveOne = async (userId, title) => {
 };
 
 module.exports.updateOne = async (userId, projectId, projectObject) => {
-  if (userId || !mongoose.Types.ObjectId.isValid(userId)) throw Error("User id invalid");
+  if (userId && !mongoose.Types.ObjectId.isValid(userId)) throw Error("User id invalid");
   if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) throw Error("Project id invalid");
 
   if (userId) {

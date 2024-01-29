@@ -90,7 +90,7 @@ module.exports.findAll = async (searchValue) => {
   if (!clients) throw Error("Invalid clients");
   if (searchValue) {
     clients = clients.filter((c) => {
-      c.email.toLowerCase().includes(searchValue.toLowerCase());
+      return c.email.toLowerCase().includes(searchValue.toLowerCase());
     });
   }
   return clients;

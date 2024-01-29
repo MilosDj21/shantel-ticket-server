@@ -1,4 +1,4 @@
-const { findOne, findAll, updateOne, deleteOne } = require("../../services/project/project");
+const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../../services/project/project");
 
 module.exports.findOne = async (req, res) => {
   const { userId, userIsAdmin } = req;

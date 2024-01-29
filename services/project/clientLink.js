@@ -35,7 +35,7 @@ module.exports.findAll = async (searchValue) => {
   if (!links) throw Error("Invalid links");
   if (searchValue) {
     links = links.filter((l) => {
-      l.url.toLowerCase().includes(searchValue.toLowerCase());
+      return l.url.toLowerCase().includes(searchValue.toLowerCase());
     });
   }
   return links;

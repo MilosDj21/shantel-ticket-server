@@ -130,7 +130,7 @@ module.exports.adminFindAll = async (searchValue) => {
   ]);
   if (searchValue) {
     tasks = tasks.filter((t) => {
-      t.title.toLowerCase().includes(searchValue.toLowerCase());
+      return t.title.toLowerCase().includes(searchValue.toLowerCase());
     });
   }
   return tasks;
@@ -287,7 +287,7 @@ module.exports.userFindAll = async (userId, searchValue) => {
 
   if (searchValue) {
     tasks = tasks.filter((t) => {
-      t.title.toLowerCase().includes(searchValue.toLowerCase());
+      return t.title.toLowerCase().includes(searchValue.toLowerCase());
     });
   }
   return tasks;

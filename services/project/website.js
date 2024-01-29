@@ -56,7 +56,7 @@ module.exports.findAll = async (searchValue) => {
   if (!websites) throw Error("Invalid websites");
   if (searchValue) {
     websites = websites.filter((w) => {
-      w.url.toLowerCase().includes(searchValue.toLowerCase());
+      return w.url.toLowerCase().includes(searchValue.toLowerCase());
     });
   }
   return websites;
