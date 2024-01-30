@@ -27,8 +27,8 @@ module.exports.saveOne = async (req, res) => {
   const messageImage = req.file;
   try {
     const image = messageImage ? messageImage.path : "";
-    const message = await saveOne(message, image, userId, task);
-    res.status(200).json({ status: "success", data: message });
+    const msg = await saveOne(message, image, userId, task);
+    res.status(200).json({ status: "success", data: msg });
   } catch (error) {
     if (messageImage) {
       fs.unlink(path.join(__dirname, `../../${messageImage.path}`), (error) => {
