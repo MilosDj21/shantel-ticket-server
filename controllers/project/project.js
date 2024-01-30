@@ -6,9 +6,9 @@ module.exports.findOne = async (req, res) => {
   let project;
   try {
     if (userIsAdmin) {
-      project = await findOne(null, projectId);
+      project = await findOne(projectId);
     } else {
-      project = await findOne(userId, projectId);
+      project = await findOne(projectId, userId);
     }
     res.status(200).json({ status: "success", data: project });
   } catch (error) {
@@ -36,7 +36,6 @@ module.exports.saveOne = async (req, res) => {
   const { userId, userIsAdmin } = req;
   const { title } = req.body;
   try {
-    // TODO: admin does not need to save new projects, maybe implement later if needed
     const project = await saveOne(userId, title);
     res.status(200).json({ status: "success", data: project });
   } catch (error) {
@@ -56,15 +55,16 @@ module.exports.updateOne = async (req, res) => {
     if (user) projectObject.user = user;
 
     if (userIsAdmin) {
-      project = await updateOne(null, projectId, projectObject);
+      project = await updateOne(projectId, projectObject);
     } else {
-      project = await updateOne(userId, projectId, projectObject);
+      project = await updateOne(projectId, projectObject, userId);
     }
     res.status(200).json({ status: "success", data: project });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
   }
 };
+
 module.exports.deleteOne = async (req, res) => {
   const { userIsAdmin } = req;
   const { projectId } = req.params;

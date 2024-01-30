@@ -22,7 +22,10 @@ module.exports.findOne = async (websiteId) => {
             },
           },
           {
-            $unwind: "$editor",
+            $unwind: {
+              path: "$editor",
+              preserveNullAndEmptyArrays: true,
+            },
           },
           {
             $lookup: {
@@ -33,7 +36,10 @@ module.exports.findOne = async (websiteId) => {
             },
           },
           {
-            $unwind: "$copywriter",
+            $unwind: {
+              path: "$copywriter",
+              preserveNullAndEmptyArrays: true,
+            },
           },
         ],
       },

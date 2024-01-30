@@ -15,7 +15,7 @@ module.exports.findAll = async () => {
 };
 
 module.exports.saveOne = async (msg, image, user, task) => {
-  const message = await PostTaskMessage.create({ msg, image, user, task });
+  const message = await PostTaskMessage.create({ message: msg, image, user, task });
   if (!message) throw Error("Creating task message failed");
   return message;
 };

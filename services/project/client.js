@@ -15,7 +15,10 @@ module.exports.findOne = async (clientId) => {
       },
     },
     {
-      $unwind: "$user",
+      $unwind: {
+        path: "$user",
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $lookup: {
@@ -40,7 +43,10 @@ module.exports.findOne = async (clientId) => {
                   },
                 },
                 {
-                  $unwind: "$website",
+                  $unwind: {
+                    path: "$website",
+                    preserveNullAndEmptyArrays: true,
+                  },
                 },
                 {
                   $lookup: {
@@ -51,7 +57,10 @@ module.exports.findOne = async (clientId) => {
                   },
                 },
                 {
-                  $unwind: "$editor",
+                  $unwind: {
+                    path: "$editor",
+                    preserveNullAndEmptyArrays: true,
+                  },
                 },
                 {
                   $lookup: {
@@ -62,7 +71,10 @@ module.exports.findOne = async (clientId) => {
                   },
                 },
                 {
-                  $unwind: "$copywriter",
+                  $unwind: {
+                    path: "$copywriter",
+                    preserveNullAndEmptyArrays: true,
+                  },
                 },
               ],
             },

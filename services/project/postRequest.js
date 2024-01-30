@@ -15,7 +15,10 @@ module.exports.findOne = async (postId) => {
       },
     },
     {
-      $unwind: "$website",
+      $unwind: {
+        path: "$website",
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $lookup: {
@@ -54,7 +57,10 @@ module.exports.findOne = async (postId) => {
       },
     },
     {
-      $unwind: "$clientPaidLink",
+      $unwind: {
+        path: "$clientPaidLink",
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $project: {

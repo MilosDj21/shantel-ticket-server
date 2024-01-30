@@ -15,7 +15,10 @@ module.exports.findOne = async (linkId) => {
       },
     },
     {
-      $unwind: "$client",
+      $unwind: {
+        path: "$client",
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $lookup: {

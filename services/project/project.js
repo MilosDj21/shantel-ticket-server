@@ -1,7 +1,7 @@
 const Project = require("../../models/project/Project");
 const mongoose = require("mongoose");
 
-module.exports.findOne = async (userId, projectId) => {
+module.exports.findOne = async (projectId, userId = null) => {
   if (userId && !mongoose.Types.ObjectId.isValid(userId)) throw Error("Invalid user id");
   if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) throw Error("Invalid project id");
 
@@ -24,56 +24,9 @@ module.exports.findOne = async (userId, projectId) => {
       },
     },
     {
-      $unwind: "$user",
-    },
-    {
-      $lookup: {
-        from: "projecttasks",
-        localField: "_id",
-        foreignField: "project",
-        as: "tasks",
-        pipeline: [
-          {
-            $lookup: {
-              from: "users",
-              localField: "assignedUsers",
-              foreignField: "_id",
-              as: "assignedUsers",
-            },
-          },
-          {
-            $lookup: {
-              from: "projecttaskmessages",
-              localField: "_id",
-              foreignField: "task",
-              as: "messages",
-              pipeline: [
-                {
-                  $lookup: {
-                    from: "users",
-                    localField: "user",
-                    foreignField: "_id",
-                    as: "user",
-                  },
-                },
-                {
-                  $unwind: "$user",
-                },
-              ],
-            },
-          },
-          {
-            $lookup: {
-              from: "projecttaskgroups",
-              localField: "group",
-              foreignField: "_id",
-              as: "group",
-            },
-          },
-          {
-            $unwind: "$group",
-          },
-        ],
+      $unwind: {
+        path: "$user",
+        preserveNullAndEmptyArrays: true,
       },
     },
     {
@@ -92,7 +45,10 @@ module.exports.findOne = async (userId, projectId) => {
             },
           },
           {
-            $unwind: "$website",
+            $unwind: {
+              path: "$website",
+              preserveNullAndEmptyArrays: true,
+            },
           },
           {
             $lookup: {
@@ -103,7 +59,10 @@ module.exports.findOne = async (userId, projectId) => {
             },
           },
           {
-            $unwind: "$editor",
+            $unwind: {
+              path: "$editor",
+              preserveNullAndEmptyArrays: true,
+            },
           },
           {
             $lookup: {
@@ -114,7 +73,10 @@ module.exports.findOne = async (userId, projectId) => {
             },
           },
           {
-            $unwind: "$copywriter",
+            $unwind: {
+              path: "$copywriter",
+              preserveNullAndEmptyArrays: true,
+            },
           },
           {
             $lookup: {
@@ -132,13 +94,81 @@ module.exports.findOne = async (userId, projectId) => {
                   },
                 },
                 {
-                  $unwind: "$client",
+                  $unwind: {
+                    path: "$client",
+                    preserveNullAndEmptyArrays: true,
+                  },
                 },
               ],
             },
           },
           {
-            $unwind: "$clientPaidLink",
+            $unwind: {
+              path: "$clientPaidLink",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "posttasks",
+              localField: "_id",
+              foreignField: "post",
+              as: "tasks",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "users",
+                    localField: "assignedUser",
+                    foreignField: "_id",
+                    as: "assignedUser",
+                  },
+                },
+                {
+                  $unwind: {
+                    path: "$assignedUser",
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+                {
+                  $lookup: {
+                    from: "posttaskmessages",
+                    localField: "_id",
+                    foreignField: "task",
+                    as: "messages",
+                    pipeline: [
+                      {
+                        $lookup: {
+                          from: "users",
+                          localField: "user",
+                          foreignField: "_id",
+                          as: "user",
+                        },
+                      },
+                      {
+                        $unwind: {
+                          path: "$user",
+                          preserveNullAndEmptyArrays: true,
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  $lookup: {
+                    from: "postgroups",
+                    localField: "group",
+                    foreignField: "_id",
+                    as: "group",
+                  },
+                },
+                {
+                  $unwind: {
+                    path: "$group",
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+              ],
+            },
           },
         ],
       },
@@ -147,14 +177,14 @@ module.exports.findOne = async (userId, projectId) => {
       $project: {
         "user.password": 0,
         "user.secret": 0,
-        "tasks.assignedUsers.password": 0,
-        "tasks.assignedUsers.secret": 0,
-        "tasks.messages.user.password": 0,
-        "tasks.messages.user.secret": 0,
         "postRequests.editor.password": 0,
         "postRequests.editor.secret": 0,
         "postRequests.copywriter.password": 0,
         "postRequests.copywriter.secret": 0,
+        "postRequests.tasks.assignedUser.password": 0,
+        "postRequests.tasks.assignedUser.secret": 0,
+        "postRequests.tasks.messages.user.password": 0,
+        "postRequests.tasks.messages.user.secret": 0,
       },
     },
   ]);
@@ -179,7 +209,10 @@ module.exports.findAll = async (userId, searchValue) => {
         },
       },
       {
-        $unwind: "$user",
+        $unwind: {
+          path: "$user",
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $project: {
@@ -192,6 +225,7 @@ module.exports.findAll = async (userId, searchValue) => {
   let projects = await Project.aggregate(aggregatePipeline);
   if (searchValue) {
     projects = projects.filter((p) => {
+      // TODO: dodaj da moze da se filtrira po linku od klijenta koji je u projektu
       return p.title.toLowerCase().includes(searchValue.toLowerCase());
     });
   }
@@ -206,7 +240,7 @@ module.exports.saveOne = async (userId, title) => {
   return project;
 };
 
-module.exports.updateOne = async (userId, projectId, projectObject) => {
+module.exports.updateOne = async (projectId, projectObject, userId = null) => {
   if (userId && !mongoose.Types.ObjectId.isValid(userId)) throw Error("User id invalid");
   if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) throw Error("Project id invalid");
 
