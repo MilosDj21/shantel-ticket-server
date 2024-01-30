@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../../services/project/projectTaskMessage");
+const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../../services/project/postTaskMessage");
 
 module.exports.findOne = async (req, res) => {
   const { messageId } = req.params;

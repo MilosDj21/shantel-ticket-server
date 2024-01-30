@@ -1,4 +1,4 @@
-const { adminFindOne, adminFindAll, adminUpdateOne, adminDeleteOne, userFindOne, userFindAll, userSaveOne, userUpdateOne, userDeleteOne } = require("../../services/project/project");
+const { adminFindOne, adminFindAll, adminUpdateOne, adminDeleteOne, userFindOne, userFindAll, userSaveOne, userUpdateOne, userDeleteOne } = require("../../services/project/postTask");
 
 module.exports.findOne = async (req, res) => {
   const { userId, userIsAdmin } = req;

@@ -3,8 +3,6 @@ const { saveOne, updateOne, findAll, findOne, deleteOne } = require("../controll
 const { verifyToken, isAdmin } = require("../middlewares/auth");
 const multerConf = require("../middlewares/multerConf");
 const { userTicketRouter } = require("./tech-ticket/techTicket");
-const { userProjectRouter } = require("./project/project");
-const { taskViewRouter: taskRouter } = require("./project/projectTask");
 
 const router = Router();
 

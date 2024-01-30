@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const projectTaskSchema = new mongoose.Schema(
+const postTaskSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -14,25 +14,24 @@ const projectTaskSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    assignedUsers: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
-      required: false,
-    },
-    project: {
+    assignedUser: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
+      ref: "User",
+    },
+    post: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "PostRequest",
       required: true,
     },
     group: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "ProjectTaskGroup",
+      ref: "PostTaskGroup",
       required: true,
     },
   },
   { timestamps: true }
 );
 
-const ProjectTask = mongoose.model("ProjectTask", projectTaskSchema);
+const PostTask = mongoose.model("PostTask", postTaskSchema);
 
-module.exports = ProjectTask;
+module.exports = PostTask;

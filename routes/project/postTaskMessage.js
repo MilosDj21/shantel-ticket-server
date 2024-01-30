@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { verifyToken } = require("../../middlewares/auth");
 const multerConf = require("../../middlewares/multerConf");
-const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../../controllers/project/projectTaskMessage");
+const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../../controllers/project/postTaskMessage");
 
 const router = Router();
 

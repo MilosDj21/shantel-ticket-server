@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const projectTaskMessageSchema = new mongoose.Schema(
+const postTaskMessageSchema = new mongoose.Schema(
   {
     message: {
       type: String,
@@ -16,13 +16,13 @@ const projectTaskMessageSchema = new mongoose.Schema(
     },
     task: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "ProjectTask",
+      ref: "PostTask",
       required: true,
     },
   },
   { timestamps: true }
 );
 
-const ProjectTaskMessage = mongoose.model("ProjectTaskMessage", projectTaskMessageSchema);
+const PostTaskMessage = mongoose.model("PostTaskMessage", postTaskMessageSchema);
 
-module.exports = ProjectTaskMessage;
+module.exports = PostTaskMessage;

@@ -1,9 +1,9 @@
-const ProjectTask = require("../../models/project/ProjectTask");
+const PostTask = require("../../models/project/PostTask");
 const mongoose = require("mongoose");
 
 module.exports.adminFindOne = async (taskId) => {
   if (!taskId || mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-  const tasks = await ProjectTask.aggregate([
+  const tasks = await PostTask.aggregate([
     { $match: { _id: new mongoose.Types.ObjectId(taskId) } },
     { $limit: 1 },
     {
@@ -86,7 +86,7 @@ module.exports.adminFindOne = async (taskId) => {
 };
 
 module.exports.adminFindAll = async (searchValue) => {
-  const tasks = await ProjectTask.aggregate([
+  const tasks = await PostTask.aggregate([
     {
       $lookup: {
         from: "users",
@@ -137,20 +137,20 @@ module.exports.adminFindAll = async (searchValue) => {
 };
 module.exports.adminUpdateOne = async (taskId, taskObject) => {
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-  const task = await ProjectTask.findByIdAndUpdate(taskId, { ...taskObject }, { new: true });
+  const task = await PostTask.findByIdAndUpdate(taskId, { ...taskObject }, { new: true });
   if (!task) throw Error("Updating task failed");
   return task;
 };
 module.exports.adminDeleteOne = async (taskId) => {
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-  const task = await ProjectTask.findByIdAndDelete(taskId);
+  const task = await PostTask.findByIdAndDelete(taskId);
   if (!task) throw Error("Deleting task failed");
   return task;
 };
 
 module.exports.userFindOne = async (userId, taskId) => {
   if (!taskId || mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-  const tasks = await ProjectTask.aggregate([
+  const tasks = await PostTask.aggregate([
     { $match: { _id: new mongoose.Types.ObjectId(taskId) } },
     { $limit: 1 },
     {
@@ -237,7 +237,7 @@ module.exports.userFindOne = async (userId, taskId) => {
 };
 
 module.exports.userFindAll = async (userId, searchValue) => {
-  const tasks = await ProjectTask.aggregate([
+  const tasks = await PostTask.aggregate([
     {
       $lookup: {
         from: "users",
@@ -294,13 +294,13 @@ module.exports.userFindAll = async (userId, searchValue) => {
 };
 module.exports.adminUpdateOne = async (taskId, taskObject) => {
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-  const task = await ProjectTask.findByIdAndUpdate(taskId, { ...taskObject }, { new: true });
+  const task = await PostTask.findByIdAndUpdate(taskId, { ...taskObject }, { new: true });
   if (!task) throw Error("Updating task failed");
   return task;
 };
 module.exports.adminDeleteOne = async (taskId) => {
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-  const task = await ProjectTask.findByIdAndDelete(taskId);
+  const task = await PostTask.findByIdAndDelete(taskId);
   if (!task) throw Error("Deleting task failed");
   return task;
 };

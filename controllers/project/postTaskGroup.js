@@ -1,4 +1,4 @@
-const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../../services/project/projectTaskGroup");
+const { findOne, findAll, saveOne, updateOne, deleteOne } = require("../../services/project/postTaskGroup");
 
 module.exports.findOne = async (req, res) => {
   const { taskGroupId } = req.params;

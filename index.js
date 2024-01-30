@@ -13,9 +13,9 @@ const userRoutes = require("./routes/user");
 const roleRoutes = require("./routes/role");
 const { adminTicketRouter: techTicketRoutes } = require("./routes/tech-ticket/techTicket");
 const projectRoutes = require("./routes/project/project");
-const projectTaskRoutes = require("./routes/project/projectTask");
-const projectTaskGroupRoutes = require("./routes/project/projectTaskGroup");
-const projectTaskMessageRoutes = require("./routes/project/projectTaskMessage");
+const postTaskRoutes = require("./routes/project/postTask");
+const postTaskGroupRoutes = require("./routes/project/postTaskGroup");
+const postTaskMessageRoutes = require("./routes/project/postTaskMessage");
 const clientRoutes = require("./routes/project/client");
 const clientLinkRoutes = require("./routes/project/clientLink");
 const postRequestRoutes = require("./routes/project/postRequest");
@@ -60,9 +60,9 @@ app.use("/techTickets", techTicketRoutes);
 
 // Project routes
 app.use("/projects", projectRoutes);
-app.use("/projectTasks", projectTaskRoutes);
-app.use("/projectTaskGroups", projectTaskGroupRoutes);
-app.use("/projectTaskMessages", projectTaskMessageRoutes);
+app.use("/postTasks", postTaskRoutes);
+app.use("/postTaskGroups", postTaskGroupRoutes);
+app.use("/postTaskMessages", postTaskMessageRoutes);
 app.use("/clients", clientRoutes);
 app.use("/clientLinks", clientLinkRoutes);
 app.use("/postRequests", postRequestRoutes);

@@ -1,22 +1,22 @@
-const ProjectTaskGroup = require("../../models/project/ProjectTaskGroup");
+const PostTaskGroup = require("../../models/project/PostTaskGroup");
 const mongoose = require("mongoose");
 
 module.exports.findOne = async (groupId) => {
   if (!groupId || !mongoose.Types.ObjectId.isValid(groupId)) throw Error("Invalid task group id");
-  const group = await ProjectTaskGroup.findById(groupId);
+  const group = await PostTaskGroup.findById(groupId);
   if (!group) throw Error("Invalid task group");
   return group;
 };
 
 module.exports.findAll = async () => {
-  const groups = await ProjectTaskGroup.find({});
+  const groups = await PostTaskGroup.find({});
   if (!groups) throw Error("Invalid task groups");
   return groups;
 };
 
 module.exports.saveOne = async (title) => {
   if (!title || title.length === 0) throw Error("Invalid title");
-  const group = await ProjectTaskGroup.create({ title });
+  const group = await PostTaskGroup.create({ title });
   if (!group) throw Error("Creating task group failed");
   return group;
 };
@@ -24,14 +24,14 @@ module.exports.saveOne = async (title) => {
 module.exports.updateOne = async (groupId, title) => {
   if (!groupId || !mongoose.Types.ObjectId.isValid(groupId)) throw Error("Invalid task group id");
   if (!title || title.length === 0) throw Error("Invalid title");
-  const group = await ProjectTaskGroup.findByIdAndUpdate(groupId, { title }, { new: true });
+  const group = await PostTaskGroup.findByIdAndUpdate(groupId, { title }, { new: true });
   if (!group) throw Error("Updating task group failed");
   return group;
 };
 
 module.exports.deleteOne = async (groupId) => {
   if (!groupId || !mongoose.Types.ObjectId.isValid(groupId)) throw Error("Invalid task group id");
-  const group = await ProjectTaskGroup.findByIdAndDelete(groupId);
+  const group = await PostTaskGroup.findByIdAndDelete(groupId);
   if (!group) throw Error("Deleting task group failed");
   return group;
 };
