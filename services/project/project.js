@@ -155,7 +155,7 @@ module.exports.findOne = async (projectId, userId = null) => {
                 },
                 {
                   $lookup: {
-                    from: "postgroups",
+                    from: "posttaskgroups",
                     localField: "group",
                     foreignField: "_id",
                     as: "group",
