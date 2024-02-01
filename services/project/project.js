@@ -31,6 +31,64 @@ module.exports.findOne = async (projectId, userId = null) => {
     },
     {
       $lookup: {
+        from: "posttaskgroups",
+        localField: "_id",
+        foreignField: "project",
+        as: "groups",
+        pipeline: [
+          {
+            $lookup: {
+              from: "posttasks",
+              localField: "_id",
+              foreignField: "group",
+              as: "tasks",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "users",
+                    localField: "assignedUser",
+                    foreignField: "_id",
+                    as: "assignedUser",
+                  },
+                },
+                {
+                  $unwind: {
+                    path: "$assignedUser",
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+                {
+                  $lookup: {
+                    from: "posttaskmessages",
+                    localField: "_id",
+                    foreignField: "task",
+                    as: "messages",
+                    pipeline: [
+                      {
+                        $lookup: {
+                          from: "users",
+                          localField: "user",
+                          foreignField: "_id",
+                          as: "user",
+                        },
+                      },
+                      {
+                        $unwind: {
+                          path: "$user",
+                          preserveNullAndEmptyArrays: true,
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
         from: "postrequests",
         localField: "_id",
         foreignField: "project",
@@ -106,68 +164,6 @@ module.exports.findOne = async (projectId, userId = null) => {
             $unwind: {
               path: "$clientPaidLink",
               preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $lookup: {
-              from: "posttasks",
-              localField: "_id",
-              foreignField: "post",
-              as: "tasks",
-              pipeline: [
-                {
-                  $lookup: {
-                    from: "users",
-                    localField: "assignedUser",
-                    foreignField: "_id",
-                    as: "assignedUser",
-                  },
-                },
-                {
-                  $unwind: {
-                    path: "$assignedUser",
-                    preserveNullAndEmptyArrays: true,
-                  },
-                },
-                {
-                  $lookup: {
-                    from: "posttaskmessages",
-                    localField: "_id",
-                    foreignField: "task",
-                    as: "messages",
-                    pipeline: [
-                      {
-                        $lookup: {
-                          from: "users",
-                          localField: "user",
-                          foreignField: "_id",
-                          as: "user",
-                        },
-                      },
-                      {
-                        $unwind: {
-                          path: "$user",
-                          preserveNullAndEmptyArrays: true,
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  $lookup: {
-                    from: "posttaskgroups",
-                    localField: "group",
-                    foreignField: "_id",
-                    as: "group",
-                  },
-                },
-                {
-                  $unwind: {
-                    path: "$group",
-                    preserveNullAndEmptyArrays: true,
-                  },
-                },
-              ],
             },
           },
         ],
