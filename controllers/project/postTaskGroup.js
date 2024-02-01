@@ -20,9 +20,9 @@ module.exports.findAll = async (req, res) => {
 };
 
 module.exports.saveOne = async (req, res) => {
-  const { title } = req.body;
+  const { title, project } = req.body;
   try {
-    const group = await saveOne(title);
+    const group = await saveOne(title, project);
     res.status(200).json({ status: "success", data: group });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
@@ -31,9 +31,12 @@ module.exports.saveOne = async (req, res) => {
 
 module.exports.updateOne = async (req, res) => {
   const { taskGroupId } = req.params;
-  const { title } = req.body;
+  const { title, project } = req.body;
   try {
-    const group = await updateOne(taskGroupId, title);
+    const groupObject = {};
+    if (title) groupObject.title = title;
+    if (project) groupObject.project = project;
+    const group = await updateOne(taskGroupId, groupObject);
     res.status(200).json({ status: "success", data: group });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });

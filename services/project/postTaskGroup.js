@@ -14,17 +14,18 @@ module.exports.findAll = async () => {
   return groups;
 };
 
-module.exports.saveOne = async (title) => {
+module.exports.saveOne = async (title, project) => {
   if (!title || title.length === 0) throw Error("Invalid title");
-  const group = await PostTaskGroup.create({ title });
+  if (!project || !mongoose.Types.ObjectId.isValid(project)) throw Error("Invalid project id");
+  const group = await PostTaskGroup.create({ title, project });
   if (!group) throw Error("Creating task group failed");
   return group;
 };
 
-module.exports.updateOne = async (groupId, title) => {
+module.exports.updateOne = async (groupId, groupObject) => {
   if (!groupId || !mongoose.Types.ObjectId.isValid(groupId)) throw Error("Invalid task group id");
   if (!title || title.length === 0) throw Error("Invalid title");
-  const group = await PostTaskGroup.findByIdAndUpdate(groupId, { title }, { new: true });
+  const group = await PostTaskGroup.findByIdAndUpdate(groupId, ...groupObject, { new: true });
   if (!group) throw Error("Updating task group failed");
   return group;
 };
