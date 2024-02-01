@@ -24,8 +24,7 @@ module.exports.saveOne = async (title, project) => {
 
 module.exports.updateOne = async (groupId, groupObject) => {
   if (!groupId || !mongoose.Types.ObjectId.isValid(groupId)) throw Error("Invalid task group id");
-  if (!title || title.length === 0) throw Error("Invalid title");
-  const group = await PostTaskGroup.findByIdAndUpdate(groupId, ...groupObject, { new: true });
+  const group = await PostTaskGroup.findByIdAndUpdate(groupId, { ...groupObject }, { new: true });
   if (!group) throw Error("Updating task group failed");
   return group;
 };
