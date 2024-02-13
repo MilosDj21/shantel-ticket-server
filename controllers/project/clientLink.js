@@ -25,8 +25,8 @@ module.exports.saveOne = async (req, res) => {
   try {
     const linkObj = {};
     if (url) linkObj.url = url;
-    if (status) linkObj.status = status;
     if (client) linkObj.client = client;
+    linkObj.status = "Neproveren";
     linkObj.lastCheckedAt = new Date();
     const link = await saveOne(linkObj);
     res.status(200).json({ status: "success", data: link });
