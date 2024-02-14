@@ -33,7 +33,7 @@ module.exports.saveOne = async (req, res) => {
     if (wordNum) postObj.wordNum = wordNum;
     if (project) postObj.project = project;
     postObj.clientHasText = clientHasText;
-    postObj.progressLevel = "New";
+    postObj.progressLevel = "new";
     const post = await saveOne(postObj);
     res.status(200).json({ status: "success", data: post });
   } catch (error) {
