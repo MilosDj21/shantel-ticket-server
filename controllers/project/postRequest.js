@@ -35,7 +35,7 @@ module.exports.saveOne = async (req, res) => {
     postObj.clientHasText = clientHasText;
     postObj.progressLevel = "new";
     const post = await saveOne(postObj);
-    res.status(200).json({ status: "success", data: post });
+    res.status(200).json({ status: "success", data: post, message: "Post successfully added" });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
   }
