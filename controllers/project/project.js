@@ -37,7 +37,7 @@ module.exports.saveOne = async (req, res) => {
   const { title } = req.body;
   try {
     const project = await saveOne(userId, title);
-    res.status(200).json({ status: "success", data: project });
+    res.status(200).json({ status: "success", data: project, message: "Project saved successfully" });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
   }
