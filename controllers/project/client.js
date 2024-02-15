@@ -21,9 +21,10 @@ module.exports.findAll = async (req, res) => {
 };
 
 module.exports.saveOne = async (req, res) => {
-  const { email, user } = req.body;
+  const { email } = req.body;
+  const { userId } = req;
   try {
-    const client = await saveOne(email, user);
+    const client = await saveOne(email, userId);
     res.status(200).json({ status: "success", data: client });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });
