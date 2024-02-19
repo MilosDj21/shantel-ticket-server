@@ -20,7 +20,7 @@ module.exports.findOne = async (req, res) => {
 module.exports.findAll = async (req, res) => {
   const { searchValue } = req.params;
   try {
-    let users = await User.find({}, { password: 0 }).populate("roles");
+    let users = await User.find({}, { password: 0, secret: 0 }).populate("roles");
     if (searchValue) {
       users = users.filter((u) => {
         if (
