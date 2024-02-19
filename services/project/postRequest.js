@@ -36,7 +36,7 @@ module.exports.updateOne = async (userId, userRoles, postId, postObj) => {
 
   const post = await Post.findByIdAndUpdate(postId, { ...postObj }, { new: true });
   if (!post) throw Error("Updating post failed");
-  return post;
+  return aggregateFind(post._id);
 };
 
 module.exports.deleteOne = async (postId) => {
