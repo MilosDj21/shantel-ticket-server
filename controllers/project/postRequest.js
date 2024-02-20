@@ -21,7 +21,7 @@ module.exports.findAll = async (req, res) => {
 };
 
 module.exports.saveOne = async (req, res) => {
-  const { website, postCategory, title, anchorKeyword, clientPaidLink, urgencyLevel, wordNum, project, clientHasText } = req.body;
+  const { website, postCategory, progressLevel, title, anchorKeyword, clientPaidLink, urgencyLevel, wordNum, project, clientHasText } = req.body;
   try {
     const postObj = {};
     if (website) postObj.website = website;
@@ -33,7 +33,11 @@ module.exports.saveOne = async (req, res) => {
     if (wordNum) postObj.wordNum = wordNum;
     if (project) postObj.project = project;
     postObj.clientHasText = clientHasText;
-    postObj.progressLevel = "new";
+    if (progressLevel) {
+      postObj.progressLevel = progressLevel;
+    } else {
+      postObj.progressLevel = "pendingCheck";
+    }
     const post = await saveOne(postObj);
     res.status(200).json({ status: "success", data: post, message: "Post successfully added" });
   } catch (error) {
