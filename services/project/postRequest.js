@@ -66,6 +66,30 @@ const aggregateFind = async (postId) => {
     },
     {
       $lookup: {
+        from: "posttasks",
+        localField: "_id",
+        foreignField: "post",
+        as: "tasks",
+        pipeline: [
+          {
+            $lookup: {
+              from: "posttaskgroups",
+              localField: "group",
+              foreignField: "_id",
+              as: "group",
+            },
+          },
+          {
+            $unwind: {
+              path: "$group",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
         from: "users",
         localField: "editor",
         foreignField: "_id",
