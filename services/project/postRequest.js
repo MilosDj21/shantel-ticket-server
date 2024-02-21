@@ -118,15 +118,15 @@ const aggregateFind = async (postId) => {
     },
     {
       $lookup: {
-        from: "clientlinks",
-        localField: "clientPaidLink",
+        from: "clientwebsites",
+        localField: "clientWebsite",
         foreignField: "_id",
-        as: "clientPaidLink",
+        as: "clientWebsite",
       },
     },
     {
       $unwind: {
-        path: "$clientPaidLink",
+        path: "$clientWebsite",
         preserveNullAndEmptyArrays: true,
       },
     },

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ClientLinkSchema = new mongoose.Schema(
+const ClientWebsiteSchema = new mongoose.Schema(
   {
     url: {
       type: String,
@@ -19,6 +19,6 @@ const ClientLinkSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const ClientLink = mongoose.model("ClientLink", ClientLinkSchema);
+const ClientWebsite = mongoose.model("ClientWebsite", ClientWebsiteSchema);
 
-module.exports = ClientLink;
+module.exports = ClientWebsite;

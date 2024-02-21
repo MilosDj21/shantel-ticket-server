@@ -22,16 +22,16 @@ module.exports.findOne = async (clientId) => {
     },
     {
       $lookup: {
-        from: "clientlinks",
+        from: "clientwebsites",
         localField: "_id",
         foreignField: "client",
-        as: "links",
+        as: "clientWebsites",
         pipeline: [
           {
             $lookup: {
               from: "postrequests",
               localField: "_id",
-              foreignField: "clientPaidLink",
+              foreignField: "clientWebsite",
               as: "postRequests",
               pipeline: [
                 {
@@ -86,10 +86,10 @@ module.exports.findOne = async (clientId) => {
       $project: {
         "user.password": 0,
         "user.secret": 0,
-        "links.postRequests.editor.password": 0,
-        "links.postRequests.editor.secret": 0,
-        "links.postRequests.copywriter.password": 0,
-        "links.postRequests.copywriter.secret": 0,
+        "clientWebsites.postRequests.editor.password": 0,
+        "clientWebsites.postRequests.editor.secret": 0,
+        "clientWebsites.postRequests.copywriter.password": 0,
+        "clientWebsites.postRequests.copywriter.secret": 0,
       },
     },
   ]);

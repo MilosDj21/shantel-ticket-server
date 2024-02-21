@@ -17,14 +17,11 @@ module.exports.findAll = async () => {
 module.exports.saveOne = async (title, project) => {
   if (!title || title.length === 0) throw Error("Invalid title");
   if (!project || !mongoose.Types.ObjectId.isValid(project)) throw Error("Invalid project id");
-  const existing = await PostTaskGroup.find({ title, project: new mongoose.Types.ObjectId(project) })
-  // TODO: treba da se uradi sa aggregate da popuni taskove posto ovako uvek vraca bez taskova i onda front ne zna jel nova grupa ili je postojeca
+  const existing = await PostTaskGroup.find({ title, project: new mongoose.Types.ObjectId(project) });
   if (existing.length > 0) {
-    console.log("🚀 ~ module.exports.saveOne= ~ existing:", existing);
     return existing[0];
   }
   const group = await PostTaskGroup.create({ title, project });
-  console.log("🚀 ~ module.exports.saveOne= ~ group:", group);
   if (!group) throw Error("Creating task group failed");
   return group;
 };
