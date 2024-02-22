@@ -122,6 +122,30 @@ const aggregateFind = async (postId) => {
         localField: "clientWebsite",
         foreignField: "_id",
         as: "clientWebsite",
+        pipeline: [
+          {
+            $lookup: {
+              from: "clientlinks",
+              localField: "_id",
+              foreignField: "clientWebsite",
+              as: "clientLinks",
+            },
+          },
+          {
+            $lookup: {
+              from: "clients",
+              localField: "client",
+              foreignField: "_id",
+              as: "client",
+            },
+          },
+          {
+            $unwind: {
+              path: "$client",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+        ],
       },
     },
     {

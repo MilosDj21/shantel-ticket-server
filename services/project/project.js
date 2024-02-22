@@ -292,6 +292,14 @@ const aggregateFind = async (projectId, userId = null) => {
                     preserveNullAndEmptyArrays: true,
                   },
                 },
+                {
+                  $lookup: {
+                    from: "clientlinks",
+                    localField: "_id",
+                    foreignField: "clientWebsite",
+                    as: "clientLinks",
+                  },
+                },
               ],
             },
           },

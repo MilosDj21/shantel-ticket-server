@@ -79,6 +79,14 @@ module.exports.findOne = async (clientId) => {
               ],
             },
           },
+          {
+            $lookup: {
+              from: "clientlinks",
+              localField: "_id",
+              foreignField: "clientWebsite",
+              as: "clientLinks",
+            },
+          },
         ],
       },
     },
