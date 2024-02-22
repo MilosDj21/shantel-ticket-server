@@ -18,6 +18,7 @@ const postTaskGroupRoutes = require("./routes/project/postTaskGroup");
 const postTaskMessageRoutes = require("./routes/project/postTaskMessage");
 const clientRoutes = require("./routes/project/client");
 const clientWebsiteRoutes = require("./routes/project/clientWebsite");
+const clientLinkRoutes = require("./routes/project/clientLink");
 const postRequestRoutes = require("./routes/project/postRequest");
 const websiteRoutes = require("./routes/project/website");
 
@@ -65,5 +66,6 @@ app.use("/postTaskGroups", postTaskGroupRoutes);
 app.use("/postTaskMessages", postTaskMessageRoutes);
 app.use("/clients", clientRoutes);
 app.use("/clientWebsites", clientWebsiteRoutes);
+app.use("/clientLinks", clientLinkRoutes);
 app.use("/postRequests", postRequestRoutes);
 app.use("/websites", websiteRoutes);
