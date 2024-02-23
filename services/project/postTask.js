@@ -67,15 +67,47 @@ module.exports.findOne = async (taskId) => {
           },
           {
             $lookup: {
-              from: "clientwebsites",
-              localField: "clientWebsite",
+              from: "clientlinks",
+              localField: "clientLink",
               foreignField: "_id",
-              as: "clientWebsite",
+              as: "clientLink",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "clientwebsites",
+                    localField: "clientWebsite",
+                    foreignField: "_id",
+                    as: "clientWebsite",
+                    pipeline: [
+                      {
+                        $lookup: {
+                          from: "clients",
+                          localField: "client",
+                          foreignField: "_id",
+                          as: "client",
+                        },
+                      },
+                      {
+                        $unwind: {
+                          path: "$client",
+                          preserveNullAndEmptyArrays: true,
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  $unwind: {
+                    path: "$clientWebsite",
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+              ],
             },
           },
           {
             $unwind: {
-              path: "$clientWebsite",
+              path: "$clientLink",
               preserveNullAndEmptyArrays: true,
             },
           },

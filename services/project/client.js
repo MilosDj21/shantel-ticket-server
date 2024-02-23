@@ -29,62 +29,64 @@ module.exports.findOne = async (clientId) => {
         pipeline: [
           {
             $lookup: {
-              from: "postrequests",
-              localField: "_id",
-              foreignField: "clientWebsite",
-              as: "postRequests",
-              pipeline: [
-                {
-                  $lookup: {
-                    from: "websites",
-                    localField: "website",
-                    foreignField: "_id",
-                    as: "website",
-                  },
-                },
-                {
-                  $unwind: {
-                    path: "$website",
-                    preserveNullAndEmptyArrays: true,
-                  },
-                },
-                {
-                  $lookup: {
-                    from: "users",
-                    localField: "editor",
-                    foreignField: "_id",
-                    as: "editor",
-                  },
-                },
-                {
-                  $unwind: {
-                    path: "$editor",
-                    preserveNullAndEmptyArrays: true,
-                  },
-                },
-                {
-                  $lookup: {
-                    from: "users",
-                    localField: "copywriter",
-                    foreignField: "_id",
-                    as: "copywriter",
-                  },
-                },
-                {
-                  $unwind: {
-                    path: "$copywriter",
-                    preserveNullAndEmptyArrays: true,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $lookup: {
               from: "clientlinks",
               localField: "_id",
               foreignField: "clientWebsite",
               as: "clientLinks",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "postrequests",
+                    localField: "_id",
+                    foreignField: "clientLink",
+                    as: "postRequests",
+                    pipeline: [
+                      {
+                        $lookup: {
+                          from: "websites",
+                          localField: "website",
+                          foreignField: "_id",
+                          as: "website",
+                        },
+                      },
+                      {
+                        $unwind: {
+                          path: "$website",
+                          preserveNullAndEmptyArrays: true,
+                        },
+                      },
+                      {
+                        $lookup: {
+                          from: "users",
+                          localField: "editor",
+                          foreignField: "_id",
+                          as: "editor",
+                        },
+                      },
+                      {
+                        $unwind: {
+                          path: "$editor",
+                          preserveNullAndEmptyArrays: true,
+                        },
+                      },
+                      {
+                        $lookup: {
+                          from: "users",
+                          localField: "copywriter",
+                          foreignField: "_id",
+                          as: "copywriter",
+                        },
+                      },
+                      {
+                        $unwind: {
+                          path: "$copywriter",
+                          preserveNullAndEmptyArrays: true,
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
             },
           },
         ],

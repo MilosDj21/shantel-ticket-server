@@ -29,9 +29,9 @@ const postRequestSchema = new mongoose.Schema(
     anchorKeyword: {
       type: String,
     },
-    clientWebsite: {
+    clientLink: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "ClientWebsite",
+      ref: "ClientLink",
     },
     textLink: {
       type: String,

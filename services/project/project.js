@@ -273,31 +273,39 @@ const aggregateFind = async (projectId, userId = null) => {
           },
           {
             $lookup: {
-              from: "clientwebsites",
-              localField: "clientWebsite",
+              from: "clientlinks",
+              localField: "clientLink",
               foreignField: "_id",
-              as: "clientWebsite",
+              as: "clientLink",
               pipeline: [
                 {
                   $lookup: {
-                    from: "clients",
-                    localField: "client",
+                    from: "clientwebsites",
+                    localField: "clientWebsite",
                     foreignField: "_id",
-                    as: "client",
+                    as: "clientWebsite",
+                    pipeline: [
+                      {
+                        $lookup: {
+                          from: "clients",
+                          localField: "client",
+                          foreignField: "_id",
+                          as: "client",
+                        },
+                      },
+                      {
+                        $unwind: {
+                          path: "$client",
+                          preserveNullAndEmptyArrays: true,
+                        },
+                      },
+                    ],
                   },
                 },
                 {
                   $unwind: {
-                    path: "$client",
+                    path: "$clientWebsite",
                     preserveNullAndEmptyArrays: true,
-                  },
-                },
-                {
-                  $lookup: {
-                    from: "clientlinks",
-                    localField: "_id",
-                    foreignField: "clientWebsite",
-                    as: "clientLinks",
                   },
                 },
               ],
@@ -305,7 +313,7 @@ const aggregateFind = async (projectId, userId = null) => {
           },
           {
             $unwind: {
-              path: "$clientWebsite",
+              path: "$clientLink",
               preserveNullAndEmptyArrays: true,
             },
           },

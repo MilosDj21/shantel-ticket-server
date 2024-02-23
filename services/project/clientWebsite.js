@@ -26,14 +26,16 @@ module.exports.findOne = async (websiteId) => {
         localField: "_id",
         foreignField: "clientWebsite",
         as: "clientLinks",
-      },
-    },
-    {
-      $lookup: {
-        from: "postrequests",
-        localField: "_id",
-        foreignField: "clientWebsite",
-        as: "posts",
+        pipeline: [
+          {
+            $lookup: {
+              from: "postrequests",
+              localField: "_id",
+              foreignField: "clientLink",
+              as: "posts",
+            },
+          },
+        ],
       },
     },
   ]);
