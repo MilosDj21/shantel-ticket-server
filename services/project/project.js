@@ -117,10 +117,12 @@ const aggregateFind = async (projectId, userId = null) => {
               as: "tasks",
               pipeline: [
                 {
-                  from: "postrequests",
-                  localField: "post",
-                  foreignField: "_id",
-                  as: "post",
+                  $lookup: {
+                    from: "postrequests",
+                    localField: "post",
+                    foreignField: "_id",
+                    as: "post",
+                  },
                 },
                 {
                   $unwind: {
