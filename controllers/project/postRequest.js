@@ -21,14 +21,14 @@ module.exports.findAll = async (req, res) => {
 };
 
 module.exports.saveOne = async (req, res) => {
-  const { website, postCategory, progressLevel, title, anchorKeyword, clientWebsite, urgencyLevel, wordNum, project, clientHasText } = req.body;
+  const { website, postCategory, progressLevel, title, anchorKeyword, clientLink, urgencyLevel, wordNum, project, clientHasText } = req.body;
   try {
     const postObj = {};
     if (website) postObj.website = website;
     if (postCategory) postObj.postCategory = postCategory;
     if (title) postObj.title = title;
     if (anchorKeyword) postObj.anchorKeyword = anchorKeyword;
-    if (clientWebsite) postObj.clientWebsite = clientWebsite;
+    if (clientLink) postObj.clientLink = clientLink;
     if (urgencyLevel) postObj.urgencyLevel = urgencyLevel;
     if (wordNum) postObj.wordNum = wordNum;
     if (project) postObj.project = project;
@@ -48,7 +48,7 @@ module.exports.saveOne = async (req, res) => {
 module.exports.updateOne = async (req, res) => {
   const { userId, userRoles } = req;
   const { postId } = req.params;
-  const { website, postCategory, progressLevel, editor, copywriter, title, anchorKeyword, clientWebsite, textLink, postLink, urgencyLevel, wordNum, project, clientHasText } = req.body;
+  const { website, postCategory, progressLevel, editor, copywriter, title, anchorKeyword, clientLink, textLink, postLink, urgencyLevel, wordNum, project, clientHasText } = req.body;
   try {
     const postObj = {};
     if (website) postObj.website = website;
@@ -58,7 +58,7 @@ module.exports.updateOne = async (req, res) => {
     if (copywriter) postObj.copywriter = copywriter;
     if (title) postObj.title = title;
     if (anchorKeyword) postObj.anchorKeyword = anchorKeyword;
-    if (clientWebsite) postObj.clientWebsite = clientWebsite;
+    if (clientLink) postObj.clientLink = clientLink;
     if (textLink) postObj.textLink = textLink;
     if (postLink) postObj.postLink = postLink;
     if (urgencyLevel) postObj.urgencyLevel = urgencyLevel;
