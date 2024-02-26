@@ -6,9 +6,6 @@ const postTaskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    dueTime: {
-      type: String,
-    },
     assignedUser: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

@@ -24,10 +24,9 @@ module.exports.findAll = async (req, res) => {
 
 module.exports.saveOne = async (req, res) => {
   const { userId, userIsAdmin } = req;
-  const { dueTime, assignedUser, post, group } = req.body;
+  const { assignedUser, post, group } = req.body;
   try {
     const taskObject = {};
-    if (dueTime) taskObject.dueTime = dueTime;
     if (assignedUser) taskObject.assignedUser = assignedUser;
     if (post) taskObject.post = post;
     if (group) taskObject.group = group;
@@ -41,11 +40,10 @@ module.exports.saveOne = async (req, res) => {
 module.exports.updateOne = async (req, res) => {
   const { userId, userIsAdmin } = req;
   const { taskId } = req.params;
-  const { status, dueTime, assignedUser, post, group } = req.body;
+  const { status, assignedUser, post, group } = req.body;
   try {
     const taskObject = {};
     if (status) taskObject.status = status;
-    if (dueTime) taskObject.dueTime = dueTime;
     if (assignedUser) taskObject.assignedUser = assignedUser;
     if (post) taskObject.post = post;
     if (group) taskObject.group = group;
