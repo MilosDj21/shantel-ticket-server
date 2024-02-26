@@ -3,6 +3,55 @@ const mongoose = require("mongoose");
 
 module.exports.findOne = async (taskId) => {
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
+  return aggregateFind(taskId);
+};
+
+module.exports.findAll = async (searchValue) => {
+  const tasks = await PostTask.aggregate([
+    {
+      $lookup: {
+        from: "postrequests",
+        localField: "post",
+        foreignField: "_id",
+        as: "post",
+      },
+    },
+    {
+      $unwind: {
+        path: "$post",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ]);
+  if (searchValue) {
+    tasks = tasks.filter((t) => {
+      return t.post.title.toLowerCase().includes(searchValue.toLowerCase());
+    });
+  }
+  return tasks;
+};
+
+module.exports.saveOne = async (taskObject) => {
+  const task = await PostTask.create({ ...taskObject, status: "New" });
+  if (!task) throw Error("Saving task failed");
+  return aggregateFind(task._id);
+};
+
+module.exports.updateOne = async (taskId, taskObject) => {
+  if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
+  const task = await PostTask.findByIdAndUpdate(taskId, { ...taskObject }, { new: true });
+  if (!task) throw Error("Updating task failed");
+  return task;
+};
+
+module.exports.deleteOne = async (taskId) => {
+  if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
+  const task = await PostTask.findByIdAndDelete(taskId);
+  if (!task) throw Error("Deleting task failed");
+  return task;
+};
+
+const aggregateFind = async (taskId) => {
   const tasks = await PostTask.aggregate([
     { $match: { _id: new mongoose.Types.ObjectId(taskId) } },
     { $limit: 1 },
@@ -145,49 +194,4 @@ module.exports.findOne = async (taskId) => {
   ]);
   if (!tasks[0]) throw Error("No such task");
   return tasks[0];
-};
-
-module.exports.findAll = async (searchValue) => {
-  const tasks = await PostTask.aggregate([
-    {
-      $lookup: {
-        from: "postrequests",
-        localField: "post",
-        foreignField: "_id",
-        as: "post",
-      },
-    },
-    {
-      $unwind: {
-        path: "$post",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-  ]);
-  if (searchValue) {
-    tasks = tasks.filter((t) => {
-      return t.post.title.toLowerCase().includes(searchValue.toLowerCase());
-    });
-  }
-  return tasks;
-};
-
-module.exports.saveOne = async (taskObject) => {
-  const task = await PostTask.create({ ...taskObject, status: "New" });
-  if (!task) throw Error("Saving task failed");
-  return task;
-};
-
-module.exports.updateOne = async (taskId, taskObject) => {
-  if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-  const task = await PostTask.findByIdAndUpdate(taskId, { ...taskObject }, { new: true });
-  if (!task) throw Error("Updating task failed");
-  return task;
-};
-
-module.exports.deleteOne = async (taskId) => {
-  if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-  const task = await PostTask.findByIdAndDelete(taskId);
-  if (!task) throw Error("Deleting task failed");
-  return task;
 };
