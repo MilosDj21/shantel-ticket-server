@@ -3,13 +3,13 @@ const mongoose = require("mongoose");
 
 module.exports.findOne = async (taskId) => {
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-  const tasks = aggregateFind(taskId);
+  const tasks = await aggregateFind(taskId);
   if (!tasks[0]) throw Error("No such task");
   return tasks[0];
 };
 
 module.exports.findAll = async (searchValue) => {
-  const tasks = aggregateFind(null);
+  let tasks = await aggregateFind(null);
   if (searchValue) {
     tasks = tasks.filter((t) => {
       return t.post.title.toLowerCase().includes(searchValue.toLowerCase());
