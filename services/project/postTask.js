@@ -3,26 +3,13 @@ const mongoose = require("mongoose");
 
 module.exports.findOne = async (taskId) => {
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) throw Error("Invalid task id");
-  return aggregateFind(taskId);
+  const tasks = aggregateFind(taskId);
+  if (!tasks[0]) throw Error("No such task");
+  return tasks[0];
 };
 
 module.exports.findAll = async (searchValue) => {
-  const tasks = await PostTask.aggregate([
-    {
-      $lookup: {
-        from: "postrequests",
-        localField: "post",
-        foreignField: "_id",
-        as: "post",
-      },
-    },
-    {
-      $unwind: {
-        path: "$post",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-  ]);
+  const tasks = aggregateFind(null);
   if (searchValue) {
     tasks = tasks.filter((t) => {
       return t.post.title.toLowerCase().includes(searchValue.toLowerCase());
@@ -34,7 +21,9 @@ module.exports.findAll = async (searchValue) => {
 module.exports.saveOne = async (taskObject) => {
   const task = await PostTask.create({ ...taskObject, status: "New" });
   if (!task) throw Error("Saving task failed");
-  return aggregateFind(task._id);
+  const tasks = aggregateFind(task._id);
+  if (!tasks[0]) throw Error("No such task");
+  return tasks[0];
 };
 
 module.exports.updateOne = async (taskId, taskObject) => {
@@ -52,9 +41,8 @@ module.exports.deleteOne = async (taskId) => {
 };
 
 const aggregateFind = async (taskId) => {
-  const tasks = await PostTask.aggregate([
-    { $match: { _id: new mongoose.Types.ObjectId(taskId) } },
-    { $limit: 1 },
+  const oneTaskAgg = [{ $match: { _id: new mongoose.Types.ObjectId(taskId) } }, { $limit: 1 }];
+  const multiTaskAgg = [
     {
       $lookup: {
         from: "users",
@@ -191,7 +179,8 @@ const aggregateFind = async (taskId) => {
         "messages.user.secret": 0,
       },
     },
-  ]);
-  if (!tasks[0]) throw Error("No such task");
-  return tasks[0];
+  ];
+  const finalAgg = taskId ? [...oneTaskAgg, ...multiTaskAgg] : [...multiTaskAgg];
+  const tasks = await PostTask.aggregate(finalAgg);
+  return tasks;
 };
