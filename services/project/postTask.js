@@ -12,7 +12,7 @@ module.exports.findAll = async (searchValue) => {
   let tasks = await aggregateFind(null);
   if (searchValue) {
     tasks = tasks.filter((t) => {
-      return t.post.title.toLowerCase().includes(searchValue.toLowerCase());
+      return t.post.title.toLowerCase().includes(searchValue.toLowerCase()) || t.post.clientLink.clientWebsite.url.toLowerCase().includes(searchValue.toLowerCase());
     });
   }
   return tasks;
@@ -145,6 +145,36 @@ const aggregateFind = async (taskId) => {
           {
             $unwind: {
               path: "$clientLink",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "projects",
+              localField: "project",
+              foreignField: "_id",
+              as: "project",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "users",
+                    localField: "user",
+                    foreignField: "_id",
+                    as: "user",
+                  },
+                },
+                {
+                  $unwind: {
+                    path: "$user",
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $unwind: {
+              path: "$project",
               preserveNullAndEmptyArrays: true,
             },
           },
