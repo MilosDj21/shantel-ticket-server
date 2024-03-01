@@ -9,7 +9,7 @@ const router = Router();
 router.use(verifyToken);
 
 router.get("/:userId", [isAdmin], findOne);
-router.get("/", [isAdmin], findAll);
+router.get("/", findAll);
 router.get("/search/:searchValue", [isAdmin], findAll);
 router.post("/", [isAdmin, multerConf], saveOne);
 router.patch("/:userId", [isAdmin, multerConf], updateOne);
