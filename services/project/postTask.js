@@ -8,8 +8,15 @@ module.exports.findOne = async (taskId) => {
   return tasks[0];
 };
 
-module.exports.findAll = async (searchValue) => {
+module.exports.findAll = async (searchValue, userRoles) => {
   let tasks = await aggregateFind(null);
+  if (userRoles.length > 0) {
+    if (userRoles.includes("Website Checker")) {
+      tasks = tasks.filter((t) => {
+        return t.group.title === "Website Check";
+      });
+    }
+  }
   if (searchValue) {
     tasks = tasks.filter((t) => {
       return t.post.title.toLowerCase().includes(searchValue.toLowerCase()) || t.post.clientLink.clientWebsite.url.toLowerCase().includes(searchValue.toLowerCase());
@@ -21,7 +28,7 @@ module.exports.findAll = async (searchValue) => {
 module.exports.saveOne = async (taskObject) => {
   const task = await PostTask.create({ ...taskObject, status: "New" });
   if (!task) throw Error("Saving task failed");
-  const tasks = aggregateFind(task._id);
+  const tasks = await aggregateFind(task._id);
   if (!tasks[0]) throw Error("No such task");
   return tasks[0];
 };
@@ -189,7 +196,7 @@ const aggregateFind = async (taskId) => {
     },
     {
       $lookup: {
-        from: "postgroups",
+        from: "posttaskgroups",
         localField: "group",
         foreignField: "_id",
         as: "group",
