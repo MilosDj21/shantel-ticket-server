@@ -2,11 +2,15 @@ require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+
+const { socketHandler } = require("./socketHandler");
 
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
@@ -23,6 +27,11 @@ const postRequestRoutes = require("./routes/project/postRequest");
 const websiteRoutes = require("./routes/project/website");
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
+//handle all socket events
+socketHandler(io);
 
 const clientAddress = process.env.ENVIRONMENT === "production" ? process.env.CLIENT_ADDRESS : "http://localhost:3000";
 const accessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: "a" });
@@ -34,7 +43,7 @@ app.use(
   cors({
     origin: clientAddress,
     credentials: true,
-  })
+  }),
 );
 app.use(helmet());
 app.use(morgan("combined", { stream: accessLogStream }));
