@@ -26,14 +26,20 @@ const clientLinkRoutes = require("./routes/project/clientLink");
 const postRequestRoutes = require("./routes/project/postRequest");
 const websiteRoutes = require("./routes/project/website");
 
+const clientAddress = process.env.ENVIRONMENT === "production" ? process.env.CLIENT_ADDRESS : "http://localhost:3000";
+
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: clientAddress,
+    credentials: true,
+  },
+});
 
 //handle all socket events
 socketHandler(io);
 
-const clientAddress = process.env.ENVIRONMENT === "production" ? process.env.CLIENT_ADDRESS : "http://localhost:3000";
 const accessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: "a" });
 
 //middlewares
@@ -55,7 +61,7 @@ mongoose
   .connect("mongodb://localhost:27017", { dbName: process.env.DB_NAME, useNewUrlParser: true, useUnifiedTopology: true })
   .then((res) => {
     console.log("Connected to the database");
-    app.listen(process.env.PORT, () => console.log(`Listening on port: ${process.env.PORT}`));
+    server.listen(process.env.PORT, () => console.log(`Listening on port: ${process.env.PORT}`));
   })
   .catch((err) => {
     console.log(err);
