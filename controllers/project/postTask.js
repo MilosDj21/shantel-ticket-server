@@ -12,10 +12,10 @@ module.exports.findOne = async (req, res) => {
 };
 
 module.exports.findAll = async (req, res) => {
-  const { userRoles } = req;
+  const { userRoles, userId } = req;
   const { searchValue } = req.params;
   try {
-    const tasks = await findAll(searchValue, userRoles);
+    const tasks = await findAll(searchValue, userRoles, userId);
     res.status(200).json({ status: "success", data: tasks });
   } catch (error) {
     res.status(500).json({ status: "failed", message: error.message });

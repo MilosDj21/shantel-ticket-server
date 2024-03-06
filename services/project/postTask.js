@@ -8,12 +8,24 @@ module.exports.findOne = async (taskId) => {
   return tasks[0];
 };
 
-module.exports.findAll = async (searchValue, userRoles) => {
+module.exports.findAll = async (searchValue, userRoles, userId) => {
   let tasks = await aggregateFind(null);
   if (userRoles.length > 0) {
     if (userRoles.includes("Website Checker")) {
       tasks = tasks.filter((t) => {
-        return t.group.title === "Website Check";
+        return t.group.title === "Website Check" && (!t.assignedUser || t.assignedUser._id.toString() === userId);
+      });
+    } else if (userRoles.includes("Copywriter")) {
+      tasks = tasks.filter((t) => {
+        return t.group.title === "Article Writing" && (!t.assignedUser || t.assignedUser._id.toString() === userId);
+      });
+    } else if (userRoles.includes("Editor")) {
+      tasks = tasks.filter((t) => {
+        return t.group.title === "Post Publishing" && (!t.assignedUser || t.assignedUser._id.toString() === userId);
+      });
+    } else if (userRoles.includes("Sales")) {
+      tasks = tasks.filter((t) => {
+        return t.post.project.user._id.toString() === userId;
       });
     }
   }
